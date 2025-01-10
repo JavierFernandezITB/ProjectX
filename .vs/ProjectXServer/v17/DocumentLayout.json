@@ -1,0 +1,149 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "F:\\Proyeckto X\\ProjectXServer\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\utils\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\utils\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\database\\db.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\database\\db.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\utils\\globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\utils\\globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\utils\\packet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\utils\\packet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|F:\\Proyeckto X\\ProjectXServer\\projectxserver\\database\\projectx_db.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\database\\projectx_db.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Server.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Server.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Server.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Server.cs",
+              "RelativeToolTip": "ProjectXServer\\Server.cs",
+              "ViewState": "AQIAAE0AAAAAAAAAAAAUwCoAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T16:52:32.565Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "projectx_db.sql ",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Database\\projectx_db.sql",
+              "RelativeDocumentMoniker": "ProjectXServer\\Database\\projectx_db.sql",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Database\\projectx_db.sql",
+              "RelativeToolTip": "ProjectXServer\\Database\\projectx_db.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2024-12-18T17:11:55.605Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DB.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Database\\DB.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Database\\DB.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Database\\DB.cs",
+              "RelativeToolTip": "ProjectXServer\\Database\\DB.cs",
+              "ViewState": "AQIAAGYAAAAAAAAAAAAnwJAAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T21:08:03.962Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Player.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Utils\\Player.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Utils\\Player.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Utils\\Player.cs",
+              "RelativeToolTip": "ProjectXServer\\Utils\\Player.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAACMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T20:43:25.25Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Packet.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Utils\\Packet.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Utils\\Packet.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Utils\\Packet.cs",
+              "RelativeToolTip": "ProjectXServer\\Utils\\Packet.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEQAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T17:27:36.769Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Globals.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Utils\\Globals.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Utils\\Globals.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Utils\\Globals.cs",
+              "RelativeToolTip": "ProjectXServer\\Utils\\Globals.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T16:52:50.203Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Client.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Client.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Client.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Client.cs",
+              "RelativeToolTip": "ProjectXServer\\Client.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB8AAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T16:52:39.94Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Program.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Program.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Program.cs",
+              "RelativeToolTip": "ProjectXServer\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAxAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T16:51:06.238Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
