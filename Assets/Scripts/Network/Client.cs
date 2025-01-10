@@ -10,29 +10,30 @@ using static Packet;
 
 public class Client : MonoBehaviour
 {
-    public static TcpClient serverSocket;
-    public static bool isClientAuthenticated = false;
-    public static Player localPlayer;
+    public TcpClient serverSocket;
+    public bool isClientAuthenticated = false;
+    public AccountSO accountData;
+    public PlayerSO playerData;
 
-    public static GameObject loginPanel;
-    public static InputField usernameField;
-    public static InputField passwordField;
-    public static UnityEngine.UI.Button loginButton;
-    public static UnityEngine.UI.Button registerButton;
-    public static Packet authPacket;
+    public GameObject loginPanel;
+    public InputField usernameField;
+    public InputField passwordField;
+    public UnityEngine.UI.Button loginButton;
+    public UnityEngine.UI.Button registerButton;
+    public Packet authPacket;
 
     void Awake()
     {
-        loginPanel = GameObject.Find("/Canvas/Panel/LOGIN_PANEL");
-        usernameField = loginPanel.transform.GetChild(1).gameObject.GetComponent<InputField>();
-        passwordField = loginPanel.transform.GetChild(2).gameObject.GetComponent<InputField>();
-        loginButton = loginPanel.transform.GetChild(3).gameObject.GetComponent<UnityEngine.UI.Button>();
-        registerButton = loginPanel.transform.GetChild(4).gameObject.GetComponent<UnityEngine.UI.Button>();
         loginButton.onClick.AddListener(AccountLogin);
         registerButton.onClick.AddListener(AccountRegister);
     }
 
     void Start()
+    {
+        StartConnection();
+    }
+
+    private void StartConnection()
     {
         Debug.Log("Starting connection with the server.");
         serverSocket = new TcpClient("127.0.0.1", 18800);
@@ -50,6 +51,7 @@ public class Client : MonoBehaviour
     {
         if (!serverSocket.Connected)
             return;
+        Debug.Log(serverSocket.Connected);
         Debug.Log("Crafting regular login packet.");
         authPacket = new Packet((byte)PacketType.Auth, $"LOGIN {usernameField.text} {passwordField.text}"); // Login user with credentials.
         HandleAuthResponse();
@@ -59,6 +61,7 @@ public class Client : MonoBehaviour
     {
         if (!serverSocket.Connected)
             return;
+        Debug.Log(serverSocket.Connected);
         Debug.Log("Crafting account register packet.");
         authPacket = new Packet((byte)PacketType.Auth, $"REGISTER {usernameField.text} {passwordField.text} test@itb.cat");
         HandleAuthResponse();
@@ -94,9 +97,8 @@ public class Client : MonoBehaviour
         }
     }
 
-    private void CraftPlayerObject(int pid, string uname)
+    private void SetupAccountObject(int pid, string uname)
     {
-        localPlayer = new Player(pid, uname);
         isClientAuthenticated = true;
     }
 
@@ -113,27 +115,42 @@ public class Client : MonoBehaviour
             {
                 case "REGISTER":
                     Debug.Log("Register successful! Try logging in.");
+                    StartConnection();
                     return;
-                    break;
                 case "LOGIN":
                     SaveAuthToken(response[2]);
-                    CraftPlayerObject(Convert.ToInt32(response[3]), response[4]);
+                    //CraftPlayerObject(Convert.ToInt32(response[3]), response[4]);
                     break;
                 case "TLOGIN":
-                    CraftPlayerObject(Convert.ToInt32(response[2]), response[3]);
+                    //CraftPlayerObject(Convert.ToInt32(response[2]), response[3]);
                     break;
                 default:
                     break;
             }
             Debug.Log("Login successful.");
-            Debug.Log($"PID: {localPlayer.playerId}");
-            Debug.Log($"USERNAME: {localPlayer.username}");
+            //Debug.Log($"PID: {localPlayer.playerId}");
+            //Debug.Log($"USERNAME: {localPlayer.username}");
+            loginPanel.SetActive(false);
+            //StartCoroutine(NetworkCoroutine());
         }
         else
         {
             Debug.LogError($"Authentication failed. Type: {response[0]}");
             if (response[0] == "TLOGIN")
                     File.Delete("./authTokenFile");
+            Debug.Log("Reconnecting...");
+            StartConnection();
+        }
+    }
+
+    // goofy ass test
+    private IEnumerator NetworkCoroutine()
+    {
+        Debug.Log("IM ALIVE");
+        while (true)
+        {
+            Debug.Log($"HE'S ALIVE? {serverSocket.Connected}");
+            yield return new WaitForSeconds(1);
         }
     }
 }
