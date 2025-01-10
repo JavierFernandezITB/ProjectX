@@ -80,13 +80,17 @@ namespace ProjectXServer
                 string username = parsedData[1];
                 string hashedpass = parsedData[2];
 
-                (string authToken, Player playerData) = DB.LoginPlayer(username, hashedpass);
+                (string authToken, Account accountData) = DB.LoginPlayer(username, hashedpass);
 
-                if (authToken != null && playerData != null)
+                if (authToken != null && accountData != null)
                 {
                     Console.WriteLine("[SERVER] Login successful! Sending response.");
-                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"LOGIN OK {authToken} {playerData.playerId} {playerData.username}");
+                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"LOGIN OK {authToken} {accountData.playerId} {accountData.username}");
                     responsePacket.Send(client);
+
+                    accountData.socket = client;
+                    Thread netThread = new Thread(() => MainNetworkLoop(accountData));
+                    netThread.Start();
                 }
                 else
                 {
@@ -100,13 +104,17 @@ namespace ProjectXServer
                 string[] parsedData = authPacket.Data.Split(" ");
                 string loginToken = parsedData[1];
 
-                Player playerData = DB.LoginWithAuthToken(loginToken);
+                Account accountData = DB.LoginWithAuthToken(loginToken);
 
-                if (playerData != null)
+                if (accountData != null)
                 {
                     Console.WriteLine("[SERVER] Token Login successful! Sending response.");
-                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"TLOGIN OK {playerData.playerId} {playerData.username}");
+                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"TLOGIN OK {accountData.playerId} {accountData.username}");
                     responsePacket.Send(client);
+
+                    accountData.socket = client;
+                    Thread netThread = new Thread(() => MainNetworkLoop(accountData));
+                    netThread.Start();
                 }
                 else
                 {
@@ -115,6 +123,16 @@ namespace ProjectXServer
                     responsePacket.Send(client);
                 }
             }
+        }
+
+        private static void MainNetworkLoop(Account localAccount)
+        {
+            while (localAccount.socket.Connected)
+            {
+                Console.WriteLine($"[{localAccount.playerId}] Waiting for client requests...");
+                Packet received = Packet.Receive(localAccount.socket);
+            }
+            Console.WriteLine($"[{localAccount.playerId}] Disconnected!");
         }
     }
 }

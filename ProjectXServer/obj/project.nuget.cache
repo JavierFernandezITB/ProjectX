@@ -1,8 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "mYxlclSUkakJrTi+WZ6ltMuV+wjPDV+he8GEV4iyMTnC40m9ctscbts3A2U7C1bdKDo4uW+1O8+U02DO9SSaPQ==",
+  "dgSpecHash": "l+Bg/5hWmM+ljdrDBGkNwNw+jH35d/IUZ/taxvg96dlGRrp8Kxs7ItiU+GbhcGPAH/YwQwjpKXL99BJcjGdUjQ==",
   "success": true,
   "projectFilePath": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\ProjectXServer.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\prof\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.2\\microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\npgsql\\9.0.2\\npgsql.9.0.2.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\system.diagnostics.diagnosticsource\\8.0.1\\system.diagnostics.diagnosticsource.8.0.1.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\prof\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512"
+  ],
   "logs": []
 }

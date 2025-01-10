@@ -26,7 +26,7 @@ namespace ProjectXServer.Database
 
                 string hashedpasswd = HashPassword(rawpasswd);
 
-                NpgsqlCommand command = new NpgsqlCommand("INSERT INTO player (username, password_hash, email) VALUES (@username, @hashedpassword, @email)", conn);
+                NpgsqlCommand command = new NpgsqlCommand("INSERT INTO accounts (username, password_hash, email) VALUES (@username, @hashedpassword, @email)", conn);
                 command.Parameters.AddWithValue("@username", username);
                 command.Parameters.AddWithValue("@hashedpassword", hashedpasswd);
                 command.Parameters.AddWithValue("@email", email);
@@ -41,21 +41,21 @@ namespace ProjectXServer.Database
             }
         }
 
-        public static (string, Player) LoginPlayer(string username, string rawpasswd)
+        public static (string, Account) LoginPlayer(string username, string rawpasswd)
         {
             using (NpgsqlConnection conn = GetConnection())
             { 
                 conn.Open();
 
-                NpgsqlCommand command = new NpgsqlCommand("SELECT id, password_hash FROM player WHERE username = :username", conn);
+                NpgsqlCommand command = new NpgsqlCommand("SELECT id, password_hash FROM accounts WHERE username = :username", conn);
                 command.Parameters.AddWithValue("username", username);
                 NpgsqlDataReader dataReader = command.ExecuteReader();
                 bool isHashValid = false;
-                int playerId = 0;
+                int accountId = 0;
 
                 if (dataReader.Read())
                 {
-                    playerId = dataReader.GetInt32(0);
+                    accountId = dataReader.GetInt32(0);
                     string storedHash = dataReader.GetString(1);
 
                     isHashValid = VerifyPassword(rawpasswd, storedHash);
@@ -65,9 +65,9 @@ namespace ProjectXServer.Database
 
                 if (isHashValid)
                 {
-                    Player playerObj = GeneratePlayerObject(playerId);
-                    string authToken = CreateAuthToken(playerId);
-                    return (authToken, playerObj);
+                    Account accountObj = GeneratePlayerObject(accountId);
+                    string authToken = CreateAuthToken(accountId);
+                    return (authToken, accountObj);
                 }
                 else
                 {
@@ -76,25 +76,25 @@ namespace ProjectXServer.Database
             }
         }
 
-        public static Player LoginWithAuthToken(string token)
+        public static Account LoginWithAuthToken(string token)
         {
             using (NpgsqlConnection conn = GetConnection())
             {
                 conn.Open();
 
-                NpgsqlCommand command = new NpgsqlCommand("SELECT player_id, expires_at FROM auth_tokens WHERE token = @token", conn);
+                NpgsqlCommand command = new NpgsqlCommand("SELECT account_id, expires_at FROM auth_tokens WHERE token = @token", conn);
                 command.Parameters.AddWithValue("@token", token);
                 NpgsqlDataReader dataReader = command.ExecuteReader();
 
                 if (dataReader.Read())
                 {
-                    int playerId = dataReader.GetInt32(0);
+                    int accountId = dataReader.GetInt32(0);
                     DateTime expirationDate = dataReader.GetDateTime(1);
 
                     dataReader.Close();
                     if (expirationDate > DateTime.UtcNow)
                     {
-                        return GeneratePlayerObject(playerId);
+                        return GeneratePlayerObject(accountId);
                     }
                 }
                 dataReader.Close();
@@ -110,7 +110,7 @@ namespace ProjectXServer.Database
 
                 string randomGeneratedToken = "PXAT_" + GenerateRandomString(64);
 
-                NpgsqlCommand command = new NpgsqlCommand("INSERT INTO auth_tokens (player_id, token, expires_at) VALUES (@playerid, @token, @expdate)", conn);
+                NpgsqlCommand command = new NpgsqlCommand("INSERT INTO auth_tokens (account_id, token, expires_at) VALUES (@playerid, @token, @expdate)", conn);
                 command.Parameters.AddWithValue("@playerid", playerId);
                 command.Parameters.AddWithValue("@token", randomGeneratedToken);
                 command.Parameters.AddWithValue("@expdate", Globals.passwordExpiresAt);
@@ -120,25 +120,25 @@ namespace ProjectXServer.Database
             }
         }
 
-        public static Player GeneratePlayerObject(int playerId)
+        public static Account GeneratePlayerObject(int accountId)
         {
             using (NpgsqlConnection conn = GetConnection())
             {
                 conn.Open();
 
-                NpgsqlCommand command = new NpgsqlCommand("SELECT username, email, created_at FROM player WHERE id = @playerid", conn);
-                command.Parameters.AddWithValue("@playerid", playerId);
+                NpgsqlCommand command = new NpgsqlCommand("SELECT username, email, created_at FROM accounts WHERE id = @accountid", conn);
+                command.Parameters.AddWithValue("@accountid", accountId);
                 NpgsqlDataReader dataReader = command.ExecuteReader();
 
                 if (dataReader.Read())
                 {
-                    string playerUsername = dataReader.GetString(0);
-                    string playerEmail = dataReader.GetString(1);
-                    DateTime playerCreatedDate = dataReader.GetDateTime(2);
+                    string accountUsername = dataReader.GetString(0);
+                    string accountEmail = dataReader.GetString(1);
+                    DateTime accountCreatedDate = dataReader.GetDateTime(2);
                     dataReader.Close();
 
-                    Player playerObj = new Player(playerId, playerUsername, playerEmail, playerCreatedDate);
-                    return playerObj;
+                    Account accountObj = new Account(accountId, accountUsername, accountEmail, accountCreatedDate);
+                    return accountObj;
                 }
 
                 dataReader.Close();

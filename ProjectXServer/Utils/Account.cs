@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectXServer.Utils
 {
-    internal class Player
+    internal class Account
     {
         public TcpClient socket;
         public int playerId;
@@ -15,7 +15,7 @@ namespace ProjectXServer.Utils
         public string email;
         public DateTime createdAt;
 
-        public Player(int playerid, string _username, string _email, DateTime _createdAt)
+        public Account(int playerid, string _username, string _email, DateTime _createdAt)
         {
             playerId = playerid;
             username = _username;
@@ -23,7 +23,7 @@ namespace ProjectXServer.Utils
             createdAt = _createdAt;
         }
 
-        public Player(TcpClient client, int playerid, string _username, string _email, DateTime _createdAt)
+        public Account(TcpClient client, int playerid, string _username, string _email, DateTime _createdAt)
         {
             socket = client;
             playerId = playerid;
