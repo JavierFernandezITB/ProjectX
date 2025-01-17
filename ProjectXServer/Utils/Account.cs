@@ -7,29 +7,24 @@ using System.Threading.Tasks;
 
 namespace ProjectXServer.Utils
 {
-    internal class Account
+    public class Account
     {
-        public TcpClient socket;
-        public int playerId;
-        public string username;
-        public string email;
-        public DateTime createdAt;
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string PasswordHash { get; set; }
+        public string Email { get; set; }
+        public List<int> Friends { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public Account(int playerid, string _username, string _email, DateTime _createdAt)
+        // Constructor to initialize the Account object
+        public Account(int id, string username, string email, DateTime createdAt)
         {
-            playerId = playerid;
-            username = _username;
-            email = _email;
-            createdAt = _createdAt;
-        }
-
-        public Account(TcpClient client, int playerid, string _username, string _email, DateTime _createdAt)
-        {
-            socket = client;
-            playerId = playerid;
-            username = _username;
-            email = _email;
-            createdAt = _createdAt;
+            Id = id;
+            Username = username;
+            Email = email;
+            CreatedAt = createdAt;
+            Friends = new List<int>(); // Initialize friends list
         }
     }
+
 }

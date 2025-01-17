@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProjectXServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ecbbed52670fbf2a4262f510412c8fa36554d7c")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProjectXServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProjectXServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

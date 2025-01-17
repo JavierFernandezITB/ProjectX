@@ -3,6 +3,7 @@ using Npgsql;
 using ProjectXServer.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,20 +27,61 @@ namespace ProjectXServer.Database
 
                 string hashedpasswd = HashPassword(rawpasswd);
 
-                NpgsqlCommand command = new NpgsqlCommand("INSERT INTO accounts (username, password_hash, email) VALUES (@username, @hashedpassword, @email)", conn);
-                command.Parameters.AddWithValue("@username", username);
-                command.Parameters.AddWithValue("@hashedpassword", hashedpasswd);
-                command.Parameters.AddWithValue("@email", email);
-                int result = 0;
-                try
+                using (var transaction = conn.BeginTransaction())
                 {
-                    result = command.ExecuteNonQuery();
+                    try
+                    {
+                        NpgsqlCommand command = new NpgsqlCommand(
+                            "INSERT INTO accounts (username, password_hash, email) VALUES (@username, @hashedpassword, @email) RETURNING id", conn);
+                        command.Parameters.AddWithValue("@username", username);
+                        command.Parameters.AddWithValue("@hashedpassword", hashedpasswd);
+                        command.Parameters.AddWithValue("@email", email);
+
+                        int accountId = (int)command.ExecuteScalar();
+
+                        bool playerCreated = CreatePlayer(conn, accountId);
+
+                        if (playerCreated)
+                        {
+                            transaction.Commit();
+                            Console.WriteLine("[DB] Player and account created successfully.");
+                            return true;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            Console.WriteLine("[DB] Failed to create player.");
+                            return false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        Console.WriteLine("[DB] Error during player registration: " + ex.Message);
+                        return false;
+                    }
                 }
-                catch (Exception ex) {}
-                Console.WriteLine($"[DB] Login operation affected {result} rows.");
-                return result > 0;
             }
         }
+
+        public static bool CreatePlayer(NpgsqlConnection conn, int accountId)
+        {
+            NpgsqlCommand playerCommand = new NpgsqlCommand(
+                "INSERT INTO players (account_id) VALUES (@account_id)", conn);
+            playerCommand.Parameters.AddWithValue("@account_id", accountId);
+
+            try
+            {
+                int playerResult = playerCommand.ExecuteNonQuery();
+                return playerResult > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DB] Error creating player: " + ex.Message);
+                return false;
+            }
+        }
+
 
         public static (string, Account) LoginPlayer(string username, string rawpasswd)
         {
@@ -75,6 +117,61 @@ namespace ProjectXServer.Database
                 }
             }
         }
+
+        public static Player GetPlayerData(int accountId)
+        {
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                conn.Open();
+
+                // Query to fetch player data based on account_id
+                string query = "SELECT id, account_id, light_points, prem_points, mastery_points, " +
+                               "current_special_skill_charge, current_special_shield_charge FROM players WHERE account_id = @account_id";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(query, conn))
+                {
+                    command.Parameters.AddWithValue("@account_id", accountId);
+
+                    try
+                    {
+                        using (NpgsqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Create a Player object and populate it with the data from the database
+                                Player player = new Player
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                    AccountId = reader.GetInt32(reader.GetOrdinal("account_id")),
+                                    LightPoints = reader.GetInt32(reader.GetOrdinal("light_points")),
+                                    PremPoints = reader.GetInt32(reader.GetOrdinal("prem_points")),
+                                    MasteryPoints = reader.GetInt32(reader.GetOrdinal("mastery_points")),
+                                    // Explicitly convert DOUBLE to FLOAT (Single)
+                                    CurrentSpecialSkillCharge = reader.IsDBNull(reader.GetOrdinal("current_special_skill_charge"))
+                                                               ? 0 : (float)reader.GetDouble(reader.GetOrdinal("current_special_skill_charge")),
+                                    CurrentSpecialShieldCharge = reader.IsDBNull(reader.GetOrdinal("current_special_shield_charge"))
+                                                               ? 0 : (float)reader.GetDouble(reader.GetOrdinal("current_special_shield_charge"))
+                                };
+
+                                return player;
+                            }
+                            else
+                            {
+                                Console.WriteLine("[DB] No player found for the given account ID.");
+                                return null; // No player found
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[DB] Error fetching player data: " + ex.Message);
+                        return null; // Return null in case of error
+                    }
+                }
+            }
+        }
+
+
 
         public static Account LoginWithAuthToken(string token)
         {

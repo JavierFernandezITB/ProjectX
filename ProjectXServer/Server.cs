@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectXServer.Database;
+using ProjectXServer.NetActions;
 using ProjectXServer.Utils;
 
 namespace ProjectXServer
@@ -12,14 +15,25 @@ namespace ProjectXServer
     internal class Server
     {
         public static TcpListener serverSocket;
-        public static List<TcpClient> connectedClients = new List<TcpClient>();
+        public static List<connectedClient> connectedClients = new List<connectedClient>();
         public static bool isCheckingForConnections = false;
+        public static Dictionary<string, NetActions.ICommand> messageHandlers;
+        private static Timer tickTimer;
 
         public static void StartServer()
         {
+            messageHandlers = new Dictionary<string, NetActions.ICommand>
+            {
+                { "GetPlayerData", new NetActions.GetPlayerDataCommand() },
+                { "GetPlayerLights", new NetActions.GetPlayerLightsCommand() },
+                { "CollectLights", new NetActions.CollectLightsCommand() },
+            };
+
             serverSocket = new TcpListener(Globals.address, Globals.port);
             serverSocket.Start();
             Console.WriteLine("[SERVER] Server started listening at port {0}.", Globals.port);
+
+            tickTimer = new Timer(TickLogic, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 
             // Await for connection...
             AcceptConnections();
@@ -38,11 +52,10 @@ namespace ProjectXServer
         }
 
         private static void HandleIncomingConnection(IAsyncResult ar)
-        { 
+        {
             TcpClient client = serverSocket.EndAcceptTcpClient(ar);
             isCheckingForConnections = false;
             Console.WriteLine("[SERVER] Got incoming connection.");
-            connectedClients.Add(client);
             HandleAuthenticationStep(client);
         }
 
@@ -66,6 +79,7 @@ namespace ProjectXServer
                     Console.WriteLine("[SERVER] Register successful! Sending response.");
                     Packet responsePacket = new Packet((byte)PacketType.Auth, $"REGISTER OK");
                     responsePacket.Send(client);
+                    HandleAuthenticationStep(client);
                 }
                 else
                 {
@@ -85,11 +99,12 @@ namespace ProjectXServer
                 if (authToken != null && accountData != null)
                 {
                     Console.WriteLine("[SERVER] Login successful! Sending response.");
-                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"LOGIN OK {authToken} {accountData.playerId} {accountData.username}");
+                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"LOGIN OK {authToken} {accountData.Id} {accountData.Username}");
                     responsePacket.Send(client);
 
-                    accountData.socket = client;
-                    Thread netThread = new Thread(() => MainNetworkLoop(accountData));
+                    Player playerData = DB.GetPlayerData(accountData.Id);
+
+                    Thread netThread = new Thread(() => MainNetworkLoop(client, accountData, playerData));
                     netThread.Start();
                 }
                 else
@@ -109,11 +124,12 @@ namespace ProjectXServer
                 if (accountData != null)
                 {
                     Console.WriteLine("[SERVER] Token Login successful! Sending response.");
-                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"TLOGIN OK {accountData.playerId} {accountData.username}");
+                    Packet responsePacket = new Packet((byte)PacketType.Auth, $"TLOGIN OK 0 {accountData.Id} {accountData.Username}");
                     responsePacket.Send(client);
 
-                    accountData.socket = client;
-                    Thread netThread = new Thread(() => MainNetworkLoop(accountData));
+                    Player playerData = DB.GetPlayerData(accountData.Id);
+
+                    Thread netThread = new Thread(() => MainNetworkLoop(client, accountData, playerData));
                     netThread.Start();
                 }
                 else
@@ -125,14 +141,59 @@ namespace ProjectXServer
             }
         }
 
-        private static void MainNetworkLoop(Account localAccount)
+        private static void MainNetworkLoop(TcpClient socket, Account localAccount, Player localPlayer)
         {
-            while (localAccount.socket.Connected)
+            connectedClient connectedClient = new connectedClient();
+            connectedClient.Socket = socket;
+            connectedClient.Player = localPlayer;
+            connectedClient.Account = localAccount;
+            connectedClients.Add(connectedClient);
+
+            while (socket.Connected)
             {
-                Console.WriteLine($"[{localAccount.playerId}] Waiting for client requests...");
-                Packet received = Packet.Receive(localAccount.socket);
+                Console.WriteLine($"[{localAccount.Id}] Waiting for client requests...");
+                Packet received = Packet.Receive(socket);
+                string[] parsedData = received.Data.Split(" ");
+                string action = parsedData[0];
+
+                if (messageHandlers.TryGetValue(action, out ICommand command))
+                {
+                    ServerMessage message = new ServerMessage
+                    {
+                        Client = connectedClient,
+                        Action = action,
+                        Parameters = parsedData.Skip(1).ToArray()
+                    };
+
+                    command.Execute(message);
+                }
+                else
+                {
+                    Console.WriteLine($"[{localAccount.Id}] Unknown action: {action}");
+                }
             }
-            Console.WriteLine($"[{localAccount.playerId}] Disconnected!");
+
+            Console.WriteLine($"[{localAccount.Id}] Disconnected!");
+        }
+
+        private static void TickLogic(object state)
+        {
+            Console.WriteLine("[SERVER] Performing tick logic...");
+            
+            foreach (var client in connectedClients)
+            {
+                if (client.Socket.Connected)
+                {
+                    // Spawn one light for the player.
+                    if (client.Player.collectableLights.Count < client.Player.MaxCollectableLights)
+                    {
+                        Vector3 position = new Vector3(new Random().Next(-50, 50),0,50);
+                        CollectableLight newCollectableLight = new CollectableLight(position);
+                        client.Player.collectableLights.Add(newCollectableLight);
+                        Console.WriteLine("Created light.");
+                    }
+                }
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ namespace ProjectXServer.Utils
     internal enum PacketType // remember to recast type before comparing.
     { 
         Auth,
+        Action,
+        ActionResult
     }
 
     internal class Packet
