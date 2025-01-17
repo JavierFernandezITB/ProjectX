@@ -11,6 +11,8 @@ public class Packet
     internal enum PacketType // remember to recast type before comparing.
     {
         Auth,
+        Action,
+        ActionResult
     }
     public byte PacketId;
     public string Data;

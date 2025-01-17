@@ -5,7 +5,6 @@ using System.IO;
 using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using static Packet;
 
 public class Client : MonoBehaviour
@@ -16,16 +15,22 @@ public class Client : MonoBehaviour
     public PlayerSO playerData;
 
     public GameObject loginPanel;
+    public GameManager gameManager;
+    public GameObject baseMap;
     public InputField usernameField;
     public InputField passwordField;
     public UnityEngine.UI.Button loginButton;
     public UnityEngine.UI.Button registerButton;
-    public Packet authPacket;
+
+    private const string ServerIP = "127.0.0.1";
+    private const int ServerPort = 18800;
+    private const string AuthTokenFilePath = "./authTokenFile";
 
     void Awake()
     {
         loginButton.onClick.AddListener(AccountLogin);
         registerButton.onClick.AddListener(AccountRegister);
+        gameManager = GameObject.Find("/GameManager").GetComponent<GameManager>();
     }
 
     void Start()
@@ -35,122 +40,222 @@ public class Client : MonoBehaviour
 
     private void StartConnection()
     {
-        Debug.Log("Starting connection with the server.");
-        serverSocket = new TcpClient("127.0.0.1", 18800);
+        Debug.Log("Attempting to connect to the server...");
+        serverSocket = new TcpClient(ServerIP, ServerPort);
 
         if (serverSocket.Connected)
         {
-            Debug.Log("Client connected to server. Waiting for auth.");
-            // Attempt token login.
-            if (File.Exists("./authTokenFile"))
+            Debug.Log("Connected to server. Checking authentication...");
+            if (File.Exists(AuthTokenFilePath))
+            {
                 AccountTokenLogin();
+            }
+        }
+        else
+        {
+            Debug.LogError("Failed to connect to server.");
         }
     }
 
     private void AccountLogin()
     {
         if (!serverSocket.Connected)
+        {
+            Debug.LogError("Not connected to the server.");
             return;
-        Debug.Log(serverSocket.Connected);
-        Debug.Log("Crafting regular login packet.");
-        authPacket = new Packet((byte)PacketType.Auth, $"LOGIN {usernameField.text} {passwordField.text}"); // Login user with credentials.
-        HandleAuthResponse();
+        }
+
+        Debug.Log("Crafting login packet...");
+        var authPacket = new Packet((byte)PacketType.Auth, $"LOGIN {usernameField.text} {passwordField.text}");
+        SendAndHandleAuthResponse(authPacket);
     }
 
     private void AccountRegister()
     {
         if (!serverSocket.Connected)
+        {
+            Debug.LogError("Not connected to the server.");
             return;
-        Debug.Log(serverSocket.Connected);
-        Debug.Log("Crafting account register packet.");
-        authPacket = new Packet((byte)PacketType.Auth, $"REGISTER {usernameField.text} {passwordField.text} test@itb.cat");
-        HandleAuthResponse();
+        }
+
+        Debug.Log("Crafting registration packet...");
+        var authPacket = new Packet((byte)PacketType.Auth, $"REGISTER {usernameField.text} {passwordField.text} test@itb.cat");
+        SendAndHandleAuthResponse(authPacket);
     }
 
     private void AccountTokenLogin()
     {
         if (!serverSocket.Connected)
+        {
+            Debug.LogError("Not connected to the server.");
             return;
-        Debug.Log("Crafting token login packet.");
+        }
+
+        Debug.Log("Crafting token login packet...");
         string token = GetSavedAuthToken();
-        authPacket = new Packet((byte)PacketType.Auth, $"TLOGIN {token}"); // Login user with auth token.
-        HandleAuthResponse();
+        if (string.IsNullOrEmpty(token))
+        {
+            Debug.LogError("No valid token found.");
+            return;
+        }
+
+        var authPacket = new Packet((byte)PacketType.Auth, $"TLOGIN {token}");
+        SendAndHandleAuthResponse(authPacket);
     }
 
     private void SaveAuthToken(string token)
     {
-        using (StreamWriter sw = new StreamWriter("./authTokenFile"))
+        try
         {
-            sw.Write(token);
-            sw.Close();
+            File.WriteAllText(AuthTokenFilePath, token);
+            Debug.Log("Authentication token saved.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to save auth token: {ex.Message}");
         }
     }
 
     private string GetSavedAuthToken()
     {
-        using (StreamReader sw = new StreamReader("./authTokenFile"))
+        try
         {
-            string token = sw.ReadToEnd();
-            if (token.StartsWith("PXAT_"))
-                return token;
-            return string.Empty;
+            if (File.Exists(AuthTokenFilePath))
+            {
+                string token = File.ReadAllText(AuthTokenFilePath);
+                if (token.StartsWith("PXAT_"))
+                {
+                    return token;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to read auth token: {ex.Message}");
+        }
+
+        return string.Empty;
+    }
+
+    private void SendAndHandleAuthResponse(Packet authPacket)
+    {
+        try
+        {
+            Debug.Log("Sending authentication packet...");
+            authPacket.Send(serverSocket);
+
+            Debug.Log("Waiting for server response...");
+            Packet responsePacket = Packet.Receive(serverSocket);
+            ProcessAuthResponse(responsePacket);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error during authentication: {ex.Message}");
         }
     }
 
-    private void SetupAccountObject(int pid, string uname)
+    private void ProcessAuthResponse(Packet responsePacket)
     {
-        isClientAuthenticated = true;
-    }
-
-    private void HandleAuthResponse()
-    {
-        Debug.Log("Sending auth packet.");
-        authPacket.Send(serverSocket);
-        Debug.Log("Sent! Waiting for response...");
-        Packet authPacketResponse = Packet.Receive(serverSocket);
-        string[] response = authPacketResponse.Data.Split(" ");
-        if (response[1] == "OK")
+        string[] response = responsePacket.Data.Split(" ");
+        if (response.Length < 2)
         {
-            switch (response[0])
-            {
-                case "REGISTER":
-                    Debug.Log("Register successful! Try logging in.");
-                    StartConnection();
-                    return;
-                case "LOGIN":
-                    SaveAuthToken(response[2]);
-                    //CraftPlayerObject(Convert.ToInt32(response[3]), response[4]);
-                    break;
-                case "TLOGIN":
-                    //CraftPlayerObject(Convert.ToInt32(response[2]), response[3]);
-                    break;
-                default:
-                    break;
-            }
-            Debug.Log("Login successful.");
-            //Debug.Log($"PID: {localPlayer.playerId}");
-            //Debug.Log($"USERNAME: {localPlayer.username}");
-            loginPanel.SetActive(false);
-            //StartCoroutine(NetworkCoroutine());
+            Debug.LogError("Invalid response from server.");
+            return;
+        }
+
+        string responseType = response[0];
+        string responseStatus = response[1];
+
+        if (responseStatus == "OK")
+        {
+            HandleAuthSuccess(responseType, response);
         }
         else
         {
-            Debug.LogError($"Authentication failed. Type: {response[0]}");
-            if (response[0] == "TLOGIN")
-                    File.Delete("./authTokenFile");
-            Debug.Log("Reconnecting...");
-            StartConnection();
+            HandleAuthFailure(responseType);
         }
     }
 
-    // goofy ass test
-    private IEnumerator NetworkCoroutine()
+    private void HandleAuthSuccess(string responseType, string[] response)
     {
-        Debug.Log("IM ALIVE");
-        while (true)
+        switch (responseType)
         {
-            Debug.Log($"HE'S ALIVE? {serverSocket.Connected}");
-            yield return new WaitForSeconds(1);
+            case "REGISTER":
+                Debug.Log("Registration successful! Please log in.");
+                return;
+
+            case "LOGIN":
+                SaveAuthToken(response[2]);
+                SetupAccount(response);
+                break;
+
+            case "TLOGIN":
+                SetupAccount(response);
+                break;
+
+            default:
+                Debug.LogError("Unexpected success response type.");
+                return;
         }
+
+        Debug.Log("Authentication successful.");
+        loginPanel.SetActive(false);
+        baseMap.SetActive(true);
+        
     }
+
+    private void HandleAuthFailure(string responseType)
+    {
+        Debug.LogError($"Authentication failed. Type: {responseType}");
+        if (responseType == "TLOGIN")
+        {
+            File.Delete(AuthTokenFilePath);
+        }
+
+        Debug.Log("Retrying connection...");
+        StartConnection();
+    }
+
+    private void SetupAccount(string[] response)
+    {
+        isClientAuthenticated = true;
+
+        if (response.Length >= 5)
+        {
+            accountData.playerId = Convert.ToInt32(response[3]);
+            accountData.username = response[4];
+            playerData.playerId = accountData.playerId;
+
+            Debug.Log($"Account setup complete. PlayerID: {accountData.playerId}, Username: {accountData.username}");
+        }
+        else
+        {
+            Debug.LogError("Insufficient data to setup account.");
+        }
+
+        UpdatePlayerData();
+    }
+
+    public void UpdatePlayerData()
+    {
+        var playerDataPacket = new Packet((byte)PacketType.Action, "GetPlayerData");
+        playerDataPacket.Send(serverSocket);
+
+        Packet playerDataResponse = Packet.Receive(serverSocket);
+
+        string[] splittedData = playerDataResponse.Data.Split(" ");
+
+        playerData.playerId = int.Parse(splittedData[0]);
+        playerData.lightCurrency = int.Parse(splittedData[1]);
+        playerData.premiumCurrency = int.Parse(splittedData[2]);
+        playerData.masteryPoints = int.Parse(splittedData[3]);
+        playerData.specialSkillCharge = float.Parse(splittedData[4]);
+        playerData.specialShieldCharge = float.Parse(splittedData[5]);
+
+        gameManager.serverSocket = serverSocket;
+        gameManager.StartMainGameLoop();
+    }
+
+    
+
 }

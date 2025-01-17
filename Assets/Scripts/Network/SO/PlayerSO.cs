@@ -9,6 +9,6 @@ public class PlayerSO : ScriptableObject
     public int lightCurrency;
     public int premiumCurrency;
     public int masteryPoints;
-    public int specialSkillCharge;
-    public int specialShieldCharge;
+    public float specialSkillCharge;
+    public float specialShieldCharge;
 }
