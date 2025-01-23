@@ -1,4 +1,5 @@
 ﻿using ProjectXServer.Utils;
+using ProjectXServer.Database;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +17,7 @@ namespace ProjectXServer.NetActions
             Console.WriteLine("[ACTION] Executing GetPlayerDataCommand");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
             Console.WriteLine($"[ACTION] Parameters: {string.Join(", ", message.Parameters)}");
+            DB.SavePlayerData(message.Client.Player);
             Packet response = new Packet((byte)PacketType.ActionResult, $"{message.Client.Player.Id} {message.Client.Player.LightPoints} {message.Client.Player.PremPoints} {message.Client.Player.MasteryPoints} {message.Client.Player.CurrentSpecialSkillCharge} {message.Client.Player.CurrentSpecialShieldCharge}");
             response.Send(message.Client.Socket);
         }

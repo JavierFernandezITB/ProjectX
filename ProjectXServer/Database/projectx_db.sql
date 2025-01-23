@@ -24,6 +24,7 @@ CREATE TABLE players (
 
 CREATE TABLE light_towers (
     player_id INT,
+    tower_num INT,
     init_date TIMESTAMP DEFAULT NOW(),
     multiplier FLOAT,
     base_amount INT,

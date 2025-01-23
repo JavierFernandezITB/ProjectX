@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,18 +68,102 @@ namespace ProjectXServer.Database
         public static bool CreatePlayer(NpgsqlConnection conn, int accountId)
         {
             NpgsqlCommand playerCommand = new NpgsqlCommand(
-                "INSERT INTO players (account_id) VALUES (@account_id)", conn);
+                "INSERT INTO players (account_id) VALUES (@account_id) RETURNING id", conn);
             playerCommand.Parameters.AddWithValue("@account_id", accountId);
 
             try
             {
-                int playerResult = playerCommand.ExecuteNonQuery();
-                return playerResult > 0;
+                int playerId = (int)playerCommand.ExecuteScalar();
+
+                if (playerId > 0)
+                {
+                    bool towersCreated = CreateLightTowers(conn, playerId);
+
+                    if (towersCreated)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("[DB] Failed to create towers.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("[DB] Failed to create player.");
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[DB] Error creating player: " + ex.Message);
+                Console.WriteLine("[DB] Error creating player or towers: " + ex.Message);
                 return false;
+            }
+        }
+
+        public static bool CreateLightTowers(NpgsqlConnection conn, int playerId)
+        {
+            try
+            {
+                NpgsqlCommand towerCommand = new NpgsqlCommand(
+                    "INSERT INTO light_towers (player_id, tower_num, multiplier, base_amount) " +
+                    "VALUES (@player_id, @tower_num, @multiplier, @base_amount)", conn);
+
+                towerCommand.Parameters.AddWithValue("@player_id", playerId);
+                towerCommand.Parameters.AddWithValue("@tower_num", 1);  // Initial state: not unlocked
+                towerCommand.Parameters.AddWithValue("@multiplier", 1.0f); // Default multiplier
+                towerCommand.Parameters.AddWithValue("@base_amount", 10);  // Default base amount
+
+                towerCommand.ExecuteNonQuery();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DB] Error creating towers: " + ex.Message);
+                return false;
+            }
+        }
+
+        public static List<LightTower> GetLightTowersByPlayer(int playerId)
+        {
+            try
+            {
+                List<LightTower> lightTowers = new List<LightTower>();
+
+                using (NpgsqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+
+                    string query = "SELECT player_id, tower_num, init_date, multiplier, base_amount FROM light_towers WHERE player_id = @player_id";
+
+                    NpgsqlCommand command = new NpgsqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@player_id", playerId);
+
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            LightTower tower = new LightTower(
+                                reader.GetInt32(0),          // player_id
+                                reader.GetInt32(1),          // tower_num
+                                reader.GetDateTime(2),       // init_date
+                                (float)reader.GetDouble(3),  // multiplier (cast double to float)
+                                reader.GetInt32(4)           // base_amount
+                            );
+
+                            lightTowers.Add(tower);
+                        }
+                    }
+                }
+
+                return lightTowers;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DB] Error retrieving light towers: " + ex.Message);
+                return null;
             }
         }
 
@@ -240,6 +325,65 @@ namespace ProjectXServer.Database
 
                 dataReader.Close();
                 return null;
+            }
+        }
+
+        public static void SaveTowerData(Player playerObject)
+        {
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                foreach (LightTower tower in playerObject.unlockedLightTowers)
+                {
+                    string query = @"
+                        UPDATE light_towers 
+                        SET init_date = @init_date, 
+                            multiplier = @multiplier, 
+                            base_amount = @base_amount 
+                        WHERE player_id = @player_id AND tower_num = @tower_num";
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("player_id", tower.PlayerId);
+                        cmd.Parameters.AddWithValue("tower_num", tower.TowerNum);
+                        cmd.Parameters.AddWithValue("init_date", tower.InitDate);
+                        cmd.Parameters.AddWithValue("multiplier", tower.Multiplier);
+                        cmd.Parameters.AddWithValue("base_amount", tower.BaseAmount);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        public static void SavePlayerData(Player playerObject)
+        {
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                conn.Open();
+
+                string query = @"
+                            UPDATE players 
+                            SET account_id = @account_id, 
+                                light_points = @light_points, 
+                                prem_points = @prem_points, 
+                                mastery_points = @mastery_points, 
+                                current_special_skill_charge = @current_special_skill_charge, 
+                                current_special_shield_charge = @current_special_shield_charge 
+                            WHERE id = @id";
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("id", playerObject.Id);
+                    cmd.Parameters.AddWithValue("account_id", playerObject.AccountId);
+                    cmd.Parameters.AddWithValue("light_points", playerObject.LightPoints);
+                    cmd.Parameters.AddWithValue("prem_points", playerObject.PremPoints);
+                    cmd.Parameters.AddWithValue("mastery_points", playerObject.MasteryPoints);
+                    cmd.Parameters.AddWithValue("current_special_skill_charge", playerObject.CurrentSpecialSkillCharge);
+                    cmd.Parameters.AddWithValue("current_special_shield_charge", playerObject.CurrentSpecialShieldCharge);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                }
             }
         }
 

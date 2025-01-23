@@ -27,6 +27,8 @@ namespace ProjectXServer
                 { "GetPlayerData", new NetActions.GetPlayerDataCommand() },
                 { "GetPlayerLights", new NetActions.GetPlayerLightsCommand() },
                 { "CollectLights", new NetActions.CollectLightsCommand() },
+                { "GetLightTowers", new NetActions.GetLightTowersCommand() },
+                { "CollectLightTowers", new NetActions.CollectLightTowersCommand() },
             };
 
             serverSocket = new TcpListener(Globals.address, Globals.port);
@@ -178,8 +180,6 @@ namespace ProjectXServer
 
         private static void TickLogic(object state)
         {
-            Console.WriteLine("[SERVER] Performing tick logic...");
-            
             foreach (var client in connectedClients)
             {
                 if (client.Socket.Connected)
@@ -187,10 +187,9 @@ namespace ProjectXServer
                     // Spawn one light for the player.
                     if (client.Player.collectableLights.Count < client.Player.MaxCollectableLights)
                     {
-                        Vector3 position = new Vector3(new Random().Next(-50, 50),0,50);
+                        Vector3 position = new Vector3(new Random().Next(-50, 50),3,new Random().Next(-50, 50));
                         CollectableLight newCollectableLight = new CollectableLight(position);
                         client.Player.collectableLights.Add(newCollectableLight);
-                        Console.WriteLine("Created light.");
                     }
                 }
             }
