@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     public TcpClient serverSocket;
 
+    public LightTowerDatabaseSO lightTowersDatabase;
     public GameObject lightPrefab;
     public List<CollectableLightStateManager> spawnedLights = new List<CollectableLightStateManager>();
 
@@ -21,6 +22,14 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator GameManagerMainLoop()
     {
+        // One time functions .-.
+
+        Debug.Log("and again :skull:");
+        lightTowersDatabase.unlockedTowers = new List<LightTowerSO>();
+        UpdateTowersDatabase();
+
+        // well well well...
+
         while (serverSocket.Connected)
         {
             var playerLightsPacket = new Packet((byte)PacketType.Action, "GetPlayerLights");
@@ -121,9 +130,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveLightTowardsTarget(GameObject light, Vector3 targetPosition)
+    public IEnumerator MoveLightTowardsTarget(GameObject light, Vector3 targetPosition)
     {
-        float moveSpeed = 1f;
+        float moveSpeed = 3f;
         float step = moveSpeed * Time.deltaTime;
 
         while (Vector3.Distance(light.transform.position, targetPosition) > 0.1f)
@@ -135,4 +144,30 @@ public class GameManager : MonoBehaviour
         Destroy(light);
     }
 
+    public void UpdateTowersDatabase()
+    {
+        Packet getLightTowersPacket = new Packet((byte)PacketType.Action, "GetLightTowers");
+        getLightTowersPacket.Send(serverSocket);
+        Packet lightTowersPacketResult = Packet.Receive(serverSocket);
+        string[] splittedData = lightTowersPacketResult.Data.Split("_");
+        Debug.Log(lightTowersPacketResult.Data);
+        foreach (string data in splittedData)
+        {
+            if (data.Length > 1)
+            {
+                Debug.Log(data);
+                string[] dataArray = data.Split("|");
+                LightTowerSO lightTowerSO = ScriptableObject.CreateInstance<LightTowerSO>();
+                Debug.Log($"{int.Parse(dataArray[0])}");
+                Debug.Log($"{DateTime.Parse(dataArray[1])}");
+                Debug.Log($"{float.Parse(dataArray[2])}");
+                Debug.Log($"{int.Parse(dataArray[3])}");
+                lightTowerSO.TowerNum = int.Parse(dataArray[0]);
+                lightTowerSO.InitDate = DateTime.Parse(dataArray[1]);
+                lightTowerSO.Multiplier = float.Parse(dataArray[2]);
+                lightTowerSO.BaseAmount = int.Parse(dataArray[3]);
+                lightTowersDatabase.unlockedTowers.Add(lightTowerSO);
+            }
+        }
+    }
 }

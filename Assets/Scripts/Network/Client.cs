@@ -15,6 +15,7 @@ public class Client : MonoBehaviour
     public PlayerSO playerData;
 
     public GameObject loginPanel;
+    public GameObject uiPanel;
     public GameManager gameManager;
     public GameObject baseMap;
     public InputField usernameField;
@@ -200,8 +201,8 @@ public class Client : MonoBehaviour
 
         Debug.Log("Authentication successful.");
         loginPanel.SetActive(false);
+        uiPanel.SetActive(false);
         baseMap.SetActive(true);
-        
     }
 
     private void HandleAuthFailure(string responseType)
@@ -234,6 +235,8 @@ public class Client : MonoBehaviour
         }
 
         UpdatePlayerData();
+        gameManager.serverSocket = serverSocket;
+        gameManager.StartMainGameLoop();
     }
 
     public void UpdatePlayerData()
@@ -251,11 +254,5 @@ public class Client : MonoBehaviour
         playerData.masteryPoints = int.Parse(splittedData[3]);
         playerData.specialSkillCharge = float.Parse(splittedData[4]);
         playerData.specialShieldCharge = float.Parse(splittedData[5]);
-
-        gameManager.serverSocket = serverSocket;
-        gameManager.StartMainGameLoop();
     }
-
-    
-
 }

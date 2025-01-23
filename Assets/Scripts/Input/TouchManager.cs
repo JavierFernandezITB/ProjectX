@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
+using UnityEngine.UIElements;
 
 public class TouchManager : MonoBehaviour
 {
@@ -10,7 +13,9 @@ public class TouchManager : MonoBehaviour
 
     private InputAction touchPositionAction;
     private InputAction touchPressAction;
+    private InputAction touchHoldAction;
     private Client netClient;
+    private bool isDragging = false;
 
     void Awake()
     {
@@ -19,36 +24,106 @@ public class TouchManager : MonoBehaviour
         netClient = GameObject.Find("/NetworkManager").GetComponent<Client>();
         touchPositionAction = playerInput.actions.FindAction("TouchPosition");
         touchPressAction = playerInput.actions.FindAction("TouchPress");
+
     }
 
-    private void OnEnable()
+    public void OnInteraction(InputAction.CallbackContext context)
     {
-        touchPressAction.performed += TouchPressCallback;
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                Debug.Log(context.interaction + " - Performed");
+
+                switch (context.interaction)
+                {
+                    case TapInteraction:
+                        TouchPressCallback();
+                        break;
+                    case HoldInteraction:
+                        isDragging = true;
+                        StartCoroutine(TouchHoldCallback());
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+            case InputActionPhase.Started:
+                Debug.Log(context.interaction + " - Started");
+                break;
+            case InputActionPhase.Canceled:
+                Debug.Log(context.interaction + " - Canceled");
+
+                switch (context.interaction)
+                {
+                    case HoldInteraction:
+                        isDragging = false;
+                        break;
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
-    private void OnDisable()
+    public void TouchPressCallback()
     {
-        touchPressAction.performed -= TouchPressCallback;
-    }
 
-    private void TouchPressCallback(InputAction.CallbackContext context)
-    {
-        // Get the screen position of the touch input
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
 
-        // Convert screen position to a ray in world space
+
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
-        // Perform a raycast from the camera to the world position
+        
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            // Get the world position where the ray hits (e.g., on the ground or at a fixed depth)
-            Vector3 hitPosition = hit.point;
-
-            // Call the function to collect lights in the radius around the hit position
-            gameManager.CollectLights(hitPosition);
+            if (hit.collider.tag == "LightTower")
+            {
+                hit.transform.GetComponent<LightTower>().CollectTowerRewards();
+            } else
+            {
+                Vector3 hitPosition = hit.point;
+                gameManager.CollectLights(hitPosition);
+            }
         }
     }
-    
+
+    public IEnumerator TouchHoldCallback()
+    {
+        // Si se está arrastrando, mover la cámara según el toque
+        Vector2 initialTouchPosition = touchPositionAction.ReadValue<Vector2>();
+        Vector3 initialCameraPosition = Camera.main.transform.position;
+        float speedFactor = 0.1f; // Factor de velocidad (ajústalo según lo necesario)
+
+        // Obtener la rotación de la cámara para moverla en el espacio del mundo correctamente
+        Quaternion cameraRotation = Camera.main.transform.rotation;
+        Vector3 cameraRight = cameraRotation * Vector3.right;  // Dirección derecha de la cámara en el espacio mundial
+        Vector3 cameraForward = cameraRotation * Vector3.forward; // Dirección hacia adelante de la cámara
+        
+        while (isDragging)
+        {
+            Vector2 currentTouchPosition = touchPositionAction.ReadValue<Vector2>();
+            Vector2 touchDelta = currentTouchPosition - initialTouchPosition;
+
+            // Invertir la dirección del movimiento
+            Vector3 horizontalMovement = -cameraRight * touchDelta.x * speedFactor; // Movimiento horizontal invertido
+            Vector3 verticalMovement = -cameraForward * touchDelta.y * speedFactor;  // Movimiento vertical invertido
+
+            // La posición final de la cámara debe respetar su altura actual (Y) para que no cambie
+            Vector3 newPosition = initialCameraPosition + horizontalMovement + verticalMovement;
+            newPosition.y = initialCameraPosition.y;  // Mantener la misma altura
+
+            // Actualizar la posición de la cámara
+            Camera.main.transform.position = newPosition;
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+
+
+
 }
+
