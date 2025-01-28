@@ -201,7 +201,7 @@ public class Client : MonoBehaviour
 
         Debug.Log("Authentication successful.");
         loginPanel.SetActive(false);
-        uiPanel.SetActive(false);
+        //uiPanel.SetActive(false);
         baseMap.SetActive(true);
     }
 
