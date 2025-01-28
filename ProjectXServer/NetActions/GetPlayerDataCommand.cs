@@ -12,12 +12,12 @@ namespace ProjectXServer.NetActions
 {
     internal class GetPlayerDataCommand : ICommand
     {
-        public void Execute(ServerMessage message)
+        public async void Execute(ServerMessage message)
         {
             Console.WriteLine("[ACTION] Executing GetPlayerDataCommand");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
             Console.WriteLine($"[ACTION] Parameters: {string.Join(", ", message.Parameters)}");
-            DB.SavePlayerData(message.Client.Player);
+            await DB.SavePlayerData(message.Client.Player);
             Packet response = new Packet((byte)PacketType.ActionResult, $"{message.Client.Player.Id} {message.Client.Player.LightPoints} {message.Client.Player.PremPoints} {message.Client.Player.MasteryPoints} {message.Client.Player.CurrentSpecialSkillCharge} {message.Client.Player.CurrentSpecialShieldCharge}");
             response.Send(message.Client.Socket);
         }

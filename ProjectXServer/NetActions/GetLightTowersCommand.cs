@@ -10,12 +10,12 @@ namespace ProjectXServer.NetActions
 {
     internal class GetLightTowersCommand : ICommand
     {
-        public void Execute(ServerMessage message)
+        public async void Execute(ServerMessage message)
         {
             Console.WriteLine("[ACTION] Executing GetLightTowers");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
             Console.WriteLine($"[ACTION] Parameters: {string.Join(", ", message.Parameters)}");
-            message.Client.Player.unlockedLightTowers = DB.GetLightTowersByPlayer(message.Client.Player.Id);
+            message.Client.Player.unlockedLightTowers = await DB.GetLightTowersByPlayer(message.Client.Player.Id);
             string dataString = "";
             foreach (LightTower tower in message.Client.Player.unlockedLightTowers)
             {

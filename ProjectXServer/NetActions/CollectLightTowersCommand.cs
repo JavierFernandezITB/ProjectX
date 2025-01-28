@@ -11,7 +11,7 @@ namespace ProjectXServer.NetActions
 {
     internal class CollectLightTowersCommand : ICommand
     {
-        public void Execute(ServerMessage message)
+        public async void Execute(ServerMessage message)
         {
             Console.WriteLine("[ACTION] Executing CollectLightTowers");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
@@ -27,7 +27,7 @@ namespace ProjectXServer.NetActions
                 playerLightTowerObject.InitDate = DateTime.Now;
                 message.Client.Player.LightPoints += reward;
             }
-            DB.SaveTowerData(message.Client.Player);
+            await DB.SaveTowerData(message.Client.Player);
             Packet responsePacket = new Packet((byte)PacketType.ActionResult, $"{playerLightTowerObject.InitDate}");
             responsePacket.Send(message.Client.Socket);
         }

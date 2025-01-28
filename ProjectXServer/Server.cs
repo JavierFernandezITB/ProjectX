@@ -61,7 +61,7 @@ namespace ProjectXServer
             HandleAuthenticationStep(client);
         }
 
-        private static void HandleAuthenticationStep(TcpClient client)
+        private static async void HandleAuthenticationStep(TcpClient client)
         {
             Console.WriteLine("[SERVER] Waiting for auth packet...");
             Packet authPacket = Packet.Receive(client);
@@ -74,7 +74,7 @@ namespace ProjectXServer
                 string hashedpass = parsedData[2];
                 string email = parsedData[3];
 
-                bool registerSuccessful = DB.RegisterPlayer(username, hashedpass, email);
+                bool registerSuccessful = await DB.RegisterPlayer(username, hashedpass, email);
 
                 if (registerSuccessful)
                 {
@@ -96,7 +96,7 @@ namespace ProjectXServer
                 string username = parsedData[1];
                 string hashedpass = parsedData[2];
 
-                (string authToken, Account accountData) = DB.LoginPlayer(username, hashedpass);
+                (string authToken, Account accountData) = await DB.LoginPlayer(username, hashedpass);
 
                 if (authToken != null && accountData != null)
                 {
@@ -104,7 +104,7 @@ namespace ProjectXServer
                     Packet responsePacket = new Packet((byte)PacketType.Auth, $"LOGIN OK {authToken} {accountData.Id} {accountData.Username}");
                     responsePacket.Send(client);
 
-                    Player playerData = DB.GetPlayerData(accountData.Id);
+                    Player playerData = await DB.GetPlayerData(accountData.Id);
 
                     Thread netThread = new Thread(() => MainNetworkLoop(client, accountData, playerData));
                     netThread.Start();
@@ -121,7 +121,7 @@ namespace ProjectXServer
                 string[] parsedData = authPacket.Data.Split(" ");
                 string loginToken = parsedData[1];
 
-                Account accountData = DB.LoginWithAuthToken(loginToken);
+                Account accountData = await DB.LoginWithAuthToken(loginToken);
 
                 if (accountData != null)
                 {
@@ -129,7 +129,7 @@ namespace ProjectXServer
                     Packet responsePacket = new Packet((byte)PacketType.Auth, $"TLOGIN OK 0 {accountData.Id} {accountData.Username}");
                     responsePacket.Send(client);
 
-                    Player playerData = DB.GetPlayerData(accountData.Id);
+                    Player playerData = await DB.GetPlayerData(accountData.Id);
 
                     Thread netThread = new Thread(() => MainNetworkLoop(client, accountData, playerData));
                     netThread.Start();

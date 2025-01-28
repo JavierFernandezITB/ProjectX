@@ -71,7 +71,6 @@ namespace ProjectXServer.NetActions
             else
                 soloDataPack = "NONE";
 
-            Console.WriteLine("LOOLOLOLLOL:" + soloDataPack);
             Packet responsePacket = new Packet((byte)PacketType.ActionResult, $"{soloDataPack}");
             responsePacket.Send(message.Client.Socket);
         }
