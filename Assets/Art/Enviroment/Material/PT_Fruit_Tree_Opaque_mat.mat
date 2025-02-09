@@ -178,7 +178,7 @@ Material:
     - EFFECT_EXTRA_TEX: 1
     - _AO: 2.4
     - _AlphaClip: 0
-    - _AlphaClipThreshold: 0.33
+    - _AlphaClipThreshold: 0
     - _AlphaToMask: 0
     - _BaseLight: 0.35
     - _BillboardKwToggle: 0
@@ -237,7 +237,7 @@ Material:
     - _SquashAmount: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _SubsurfaceIndirect: 0.25
+    - _SubsurfaceIndirect: 0.278
     - _SubsurfaceKwToggle: 0
     - _Surface: 0
     - _TwoSided: 2
