@@ -14,10 +14,10 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
-  m_FogDensity: 0.01
+  m_Fog: 1
+  m_FogColor: {r: 0.71488965, g: 0.97954625, b: 0.990566, a: 1}
+  m_FogMode: 1
+  m_FogDensity: 0.1
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -96,7 +96,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 318e62110eb17694680dad9c6a79ddee,
+    type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -259,6 +260,74 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1001 &120613032
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 527.749
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 24.36578
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 545.56116
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: dc6551b744ed40d47995a33ebb1d9808,
+        type: 3}
+      propertyPath: m_Name
+      value: Gatolote_Absorber
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dc6551b744ed40d47995a33ebb1d9808, type: 3}
 --- !u!1 &525605072
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,3 +615,4 @@ SceneRoots:
   - {fileID: 1867377410}
   - {fileID: 525605075}
   - {fileID: 949002685}
+  - {fileID: 120613032}
