@@ -1,8 +1,11 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Xml.Linq;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 using static Packet;
@@ -67,7 +70,12 @@ public class Client : MonoBehaviour
         }
 
         Debug.Log("Crafting login packet...");
-        var authPacket = new Packet((byte)PacketType.Auth, $"LOGIN {usernameField.text} {passwordField.text}");
+        Dictionary<string, string> loginData = new Dictionary<string, string>() {
+            { "action", "LOGIN" },
+            { "username", usernameField.text },
+            { "passwd", passwordField.text }
+        };
+        var authPacket = new Packet((byte)PacketType.Auth, JObject.FromObject(loginData));
         SendAndHandleAuthResponse(authPacket);
     }
 
@@ -80,7 +88,13 @@ public class Client : MonoBehaviour
         }
 
         Debug.Log("Crafting registration packet...");
-        var authPacket = new Packet((byte)PacketType.Auth, $"REGISTER {usernameField.text} {passwordField.text} test@itb.cat");
+        Dictionary<string, string> registerData = new Dictionary<string, string>() {
+            { "action", "REGISTER" },
+            { "username", usernameField.text },
+            { "passwd", passwordField.text },
+            { "email", "test@itb.cat" }
+        };
+        var authPacket = new Packet((byte)PacketType.Auth, JObject.FromObject(registerData));
         SendAndHandleAuthResponse(authPacket);
     }
 
@@ -100,7 +114,12 @@ public class Client : MonoBehaviour
             return;
         }
 
-        var authPacket = new Packet((byte)PacketType.Auth, $"TLOGIN {token}");
+        Dictionary<string, string> tloginData = new Dictionary<string, string>() {
+            { "action", "TLOGIN" },
+            { "token", token }
+        };
+
+        var authPacket = new Packet((byte)PacketType.Auth, JObject.FromObject(tloginData));
         SendAndHandleAuthResponse(authPacket);
     }
 
@@ -157,19 +176,12 @@ public class Client : MonoBehaviour
 
     private void ProcessAuthResponse(Packet responsePacket)
     {
-        string[] response = responsePacket.Data.Split(" ");
-        if (response.Length < 2)
-        {
-            Debug.LogError("Invalid response from server.");
-            return;
-        }
-
-        string responseType = response[0];
-        string responseStatus = response[1];
+        string responseType = (string)responsePacket.Data["action"];
+        string responseStatus = (string)responsePacket.Data["response"];
 
         if (responseStatus == "OK")
         {
-            HandleAuthSuccess(responseType, response);
+            HandleAuthSuccess(responseType, responsePacket);
         }
         else
         {
@@ -177,8 +189,9 @@ public class Client : MonoBehaviour
         }
     }
 
-    private void HandleAuthSuccess(string responseType, string[] response)
+    private void HandleAuthSuccess(string responseType, Packet response)
     {
+        Debug.Log(responseType);
         switch (responseType)
         {
             case "REGISTER":
@@ -186,7 +199,7 @@ public class Client : MonoBehaviour
                 return;
 
             case "LOGIN":
-                SaveAuthToken(response[2]);
+                SaveAuthToken((string)response.Data["token"]);
                 SetupAccount(response);
                 break;
 
@@ -217,42 +230,42 @@ public class Client : MonoBehaviour
         StartConnection();
     }
 
-    private void SetupAccount(string[] response)
+    private void SetupAccount(Packet response)
     {
-        isClientAuthenticated = true;
+        accountData.playerId = (int)response.Data["accountid"];
+        accountData.username = (string)response.Data["username"];
+        playerData.playerId = accountData.playerId;
 
-        if (response.Length >= 5)
-        {
-            accountData.playerId = Convert.ToInt32(response[3]);
-            accountData.username = response[4];
-            playerData.playerId = accountData.playerId;
-
-            Debug.Log($"Account setup complete. PlayerID: {accountData.playerId}, Username: {accountData.username}");
-        }
-        else
-        {
-            Debug.LogError("Insufficient data to setup account.");
-        }
+        Debug.Log($"Account setup complete. PlayerID: {accountData.playerId}, Username: {accountData.username}");
 
         UpdatePlayerData();
+
+        isClientAuthenticated = true;
         gameManager.serverSocket = serverSocket;
         gameManager.StartMainGameLoop();
     }
 
     public void UpdatePlayerData()
     {
-        var playerDataPacket = new Packet((byte)PacketType.Action, "GetPlayerData");
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>()
+        {
+        };
+
+        Dictionary<string, object> getPlayerData = new Dictionary<string, object>() {
+            { "action", "GetPlayerData" },
+            { "params", paramsDict }
+        };
+        var playerDataPacket = new Packet((byte)PacketType.Action, JObject.FromObject(getPlayerData));
         playerDataPacket.Send(serverSocket);
 
         Packet playerDataResponse = Packet.Receive(serverSocket);
+        Dictionary<string, object> responseParams = playerDataResponse.Data["params"].ToObject<Dictionary<string, object>>();
 
-        string[] splittedData = playerDataResponse.Data.Split(" ");
-
-        playerData.playerId = int.Parse(splittedData[0]);
-        playerData.lightCurrency = int.Parse(splittedData[1]);
-        playerData.premiumCurrency = int.Parse(splittedData[2]);
-        playerData.masteryPoints = int.Parse(splittedData[3]);
-        playerData.specialSkillCharge = float.Parse(splittedData[4]);
-        playerData.specialShieldCharge = float.Parse(splittedData[5]);
+        playerData.playerId = (int)responseParams["playerId"];
+        playerData.lightCurrency = (int)responseParams["lightPoints"];
+        playerData.premiumCurrency = (int)responseParams["premPoints"];
+        playerData.masteryPoints = (int)responseParams["masteryPoints"];
+        playerData.specialSkillCharge = (float)responseParams["currentSpecialSkillCharge"];
+        playerData.specialShieldCharge = (float)responseParams["currentSpecialShieldCharge"];
     }
 }

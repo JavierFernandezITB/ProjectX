@@ -1,9 +1,13 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Xml.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Packet;
 
 public class GameManager : MonoBehaviour
@@ -32,33 +36,40 @@ public class GameManager : MonoBehaviour
 
         while (serverSocket.Connected)
         {
-            var playerLightsPacket = new Packet((byte)PacketType.Action, "GetPlayerLights");
+            Dictionary<string, object> paramsDict = new Dictionary<string, object>()
+            {
+            };
+
+            Dictionary<string, object> getPlayerLights = new Dictionary<string, object>() {
+                { "action", "GetPlayerLights" },
+                { "params", paramsDict }
+            };
+
+            var playerLightsPacket = new Packet((byte)PacketType.Action, JObject.FromObject(getPlayerLights));
             playerLightsPacket.Send(serverSocket);
             Packet response = Packet.Receive(serverSocket);
-            if (response.Data != "EMPTY")
+            Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
+            List<Dictionary<string, string>> lightsDataDict = responseParams["lightsDataDict"].ConvertTo<List<Dictionary<string, string>>>();
+
+            if (lightsDataDict.Count != 0)
             {
-                string[] receivedLights = response.Data.Split(" ");
-                foreach (string light in receivedLights)
+                foreach (Dictionary<string, string> entry in lightsDataDict)
                 {
-                    string[] splittedData = light.Split("|");
-                    if (splittedData.Length > 1)
+                    string lightUuid = entry["uuid"];
+
+                    bool lightExists = spawnedLights.Exists(l =>
                     {
-                        string lightUuid = splittedData[0];
+                        return l.UUID == Guid.Parse(lightUuid);
+                    });
 
-                        bool lightExists = spawnedLights.Exists(l =>
-                        {
-                            return l.UUID == Guid.Parse(lightUuid);
-                        });
-
-                        if (!lightExists)
-                        {
-                            Vector3 lightPosition = new Vector3(float.Parse(splittedData[1]), float.Parse(splittedData[2]), float.Parse(splittedData[3]));
-                            GameObject lightInstance = Instantiate(lightPrefab);
-                            lightInstance.transform.position = lightPosition;
-                            CollectableLightStateManager lightComponent = lightInstance.GetComponent<CollectableLightStateManager>();
-                            lightComponent.UUID = Guid.Parse(lightUuid);
-                            spawnedLights.Add(lightComponent);
-                        }
+                    if (!lightExists)
+                    {
+                        Vector3 lightPosition = new Vector3(float.Parse(entry["lightPosX"]), float.Parse(entry["lightPosY"]), float.Parse(entry["lightPosZ"]));
+                        GameObject lightInstance = Instantiate(lightPrefab);
+                        lightInstance.transform.position = lightPosition;
+                        CollectableLightStateManager lightComponent = lightInstance.GetComponent<CollectableLightStateManager>();
+                        lightComponent.UUID = Guid.Parse(lightUuid);
+                        spawnedLights.Add(lightComponent);
                     }
                 }
             }
@@ -84,21 +95,37 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        string dataPack = $"{position.x}|{position.y}|{position.z} ";
+
+
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>()
+        {
+            { "mousePosX", position.x},
+            { "mousePosY", position.y},
+            { "mousePosZ", position.z},
+            { "uuidList", new List<string>() }
+        };
+
         foreach (CollectableLightStateManager CLSM in toCollect)
         {
-            dataPack += CLSM.UUID.ToString() + " ";
+            paramsDict["uuidList"].ConvertTo<List<string>>().Add(CLSM.UUID.ToString());
         }
 
-        Packet collectionPacket = new Packet((byte)Packet.PacketType.Action, $"CollectLights {dataPack}");
+        Dictionary<string, object> collectLights = new Dictionary<string, object>() {
+            { "action", "CollectLights" },
+            { "params", paramsDict }
+        };
+
+        Packet collectionPacket = new Packet((byte)Packet.PacketType.Action, JObject.FromObject(collectLights));
         collectionPacket.Send(serverSocket);
         Packet collectionPacketResponse = Packet.Receive(serverSocket);
-        if (collectionPacketResponse.Data == "NONE")
+        Dictionary<string, object> responseParams = collectionPacketResponse.Data["params"].ToObject<Dictionary<string, object>>();
+        List<string> uuidsList = responseParams["uuidsList"].ConvertTo<List<string>>();
+
+        if (uuidsList.Contains("NONE"))
             return;
         else
         {
-            string[] splittedUuids = collectionPacketResponse.Data.Split(" ");
-            foreach (string uuid in splittedUuids)
+            foreach (string uuid in uuidsList)
             {
                 if (Guid.TryParse(uuid, out Guid uuidGuid))
                 {
@@ -146,28 +173,35 @@ public class GameManager : MonoBehaviour
 
     public void UpdateTowersDatabase()
     {
-        Packet getLightTowersPacket = new Packet((byte)PacketType.Action, "GetLightTowers");
-        getLightTowersPacket.Send(serverSocket);
-        Packet lightTowersPacketResult = Packet.Receive(serverSocket);
-        string[] splittedData = lightTowersPacketResult.Data.Split("_");
-        Debug.Log(lightTowersPacketResult.Data);
-        foreach (string data in splittedData)
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>()
         {
-            if (data.Length > 1)
-            {
-                Debug.Log(data);
-                string[] dataArray = data.Split("|");
-                LightTowerSO lightTowerSO = ScriptableObject.CreateInstance<LightTowerSO>();
-                Debug.Log($"{int.Parse(dataArray[0])}");
-                Debug.Log($"{DateTime.Parse(dataArray[1])}");
-                Debug.Log($"{float.Parse(dataArray[2])}");
-                Debug.Log($"{int.Parse(dataArray[3])}");
-                lightTowerSO.TowerNum = int.Parse(dataArray[0]);
-                lightTowerSO.InitDate = DateTime.Parse(dataArray[1]);
-                lightTowerSO.Multiplier = float.Parse(dataArray[2]);
-                lightTowerSO.BaseAmount = int.Parse(dataArray[3]);
-                lightTowersDatabase.unlockedTowers.Add(lightTowerSO);
-            }
+        };
+
+        Dictionary<string, object> getLightTowers = new Dictionary<string, object>() {
+            { "action", "GetLightTowers" },
+            { "params", paramsDict }
+        };
+
+        Packet getLightTowersPacket = new Packet((byte)PacketType.Action, JObject.FromObject(getLightTowers));
+        getLightTowersPacket.Send(serverSocket);
+
+        Packet lightTowersPacketResult = Packet.Receive(serverSocket);
+        Dictionary<string, object> responseParams = lightTowersPacketResult.Data["params"].ToObject<Dictionary<string, object>>();
+
+        List<Dictionary<string, string>> towersData = responseParams["towersDataDict"].ConvertTo<List<Dictionary<string, string>>>();
+        Debug.Log(lightTowersPacketResult.Data);
+        foreach (Dictionary<string, string> entry in towersData)
+        {
+            LightTowerSO lightTowerSO = ScriptableObject.CreateInstance<LightTowerSO>();
+            lightTowerSO.TowerNum = int.Parse(entry["towerNum"]);
+            lightTowerSO.InitDate = DateTime.Parse(entry["initDate"]);
+            lightTowerSO.Multiplier = float.Parse(entry["multiplier"]);
+            lightTowerSO.BaseAmount = int.Parse(entry["baseAmount"]);
+            Debug.Log($"{lightTowerSO.TowerNum}");
+            Debug.Log($"{lightTowerSO.InitDate}");
+            Debug.Log($"{lightTowerSO.Multiplier}");
+            Debug.Log($"{lightTowerSO.BaseAmount}");
+            lightTowersDatabase.unlockedTowers.Add(lightTowerSO);
         }
     }
 }

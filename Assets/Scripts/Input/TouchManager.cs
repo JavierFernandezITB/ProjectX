@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -75,14 +75,15 @@ public class TouchManager : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
-        
+
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.tag == "LightTower")
             {
                 hit.transform.GetComponent<LightTower>().CollectTowerRewards();
-            } else
+            }
+            else
             {
                 Vector3 hitPosition = hit.point;
                 gameManager.CollectLights(hitPosition);
@@ -92,30 +93,30 @@ public class TouchManager : MonoBehaviour
 
     public IEnumerator TouchHoldCallback()
     {
-        // Si se está arrastrando, mover la cámara según el toque
+        // Si se estï¿½ arrastrando, mover la cï¿½mara segï¿½n el toque
         Vector2 initialTouchPosition = touchPositionAction.ReadValue<Vector2>();
         Vector3 initialCameraPosition = Camera.main.transform.position;
-        float speedFactor = 0.1f; // Factor de velocidad (ajústalo según lo necesario)
+        float speedFactor = 0.1f; // Factor de velocidad (ajï¿½stalo segï¿½n lo necesario)
 
-        // Obtener la rotación de la cámara para moverla en el espacio del mundo correctamente
+        // Obtener la rotaciï¿½n de la cï¿½mara para moverla en el espacio del mundo correctamente
         Quaternion cameraRotation = Camera.main.transform.rotation;
-        Vector3 cameraRight = cameraRotation * Vector3.right;  // Dirección derecha de la cámara en el espacio mundial
-        Vector3 cameraForward = cameraRotation * Vector3.forward; // Dirección hacia adelante de la cámara
-        
+        Vector3 cameraRight = cameraRotation * Vector3.right;  // Direcciï¿½n derecha de la cï¿½mara en el espacio mundial
+        Vector3 cameraForward = cameraRotation * Vector3.forward; // Direcciï¿½n hacia adelante de la cï¿½mara
+
         while (isDragging)
         {
             Vector2 currentTouchPosition = touchPositionAction.ReadValue<Vector2>();
             Vector2 touchDelta = currentTouchPosition - initialTouchPosition;
 
-            // Invertir la dirección del movimiento
+            // Invertir la direcciï¿½n del movimiento
             Vector3 horizontalMovement = -cameraRight * touchDelta.x * speedFactor; // Movimiento horizontal invertido
             Vector3 verticalMovement = -cameraForward * touchDelta.y * speedFactor;  // Movimiento vertical invertido
 
-            // La posición final de la cámara debe respetar su altura actual (Y) para que no cambie
+            // La posiciï¿½n final de la cï¿½mara debe respetar su altura actual (Y) para que no cambie
             Vector3 newPosition = initialCameraPosition + horizontalMovement + verticalMovement;
             newPosition.y = initialCameraPosition.y;  // Mantener la misma altura
 
-            // Actualizar la posición de la cámara
+            // Actualizar la posiciï¿½n de la cï¿½mara
             Camera.main.transform.position = newPosition;
 
             yield return new WaitForEndOfFrame();

@@ -1,9 +1,11 @@
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Xml.Linq;
 using UnityEngine;
 
 public class Packet
@@ -15,9 +17,9 @@ public class Packet
         ActionResult
     }
     public byte PacketId;
-    public string Data;
+    public JObject Data;
 
-    public Packet(byte packetId, string data)
+    public Packet(byte packetId, JObject data)
     {
         PacketId = packetId;
         Data = data;
@@ -27,16 +29,19 @@ public class Packet
     {
         using (MemoryStream memstream = new MemoryStream())
         {
-            // write the packet id
+            // Escribir el PacketId
             memstream.WriteByte(PacketId);
 
-            // save the packet data size.
-            byte[] dataLength = BitConverter.GetBytes(Data.Length);
+            // Serializar los datos JSON a string
+            string jsonData = Data.ToString();
+            byte[] dataBytes = Encoding.UTF8.GetBytes(jsonData);
+
+            // Guardar el tama�o de los datos
+            byte[] dataLength = BitConverter.GetBytes(dataBytes.Length);
             memstream.Write(dataLength, 0, dataLength.Length);
 
-            // save the data as an array of bytes.
-            byte[] dataArray = Encoding.UTF8.GetBytes(Data);
-            memstream.Write(dataArray, 0, dataArray.Length);
+            // Escribir los datos JSON
+            memstream.Write(dataBytes, 0, dataBytes.Length);
 
             return memstream.ToArray();
         }
@@ -44,22 +49,25 @@ public class Packet
 
     public static Packet Deserialize(NetworkStream nstream)
     {
-        // get the packet id.
+        // Obtener el PacketId
         byte packetid = (byte)nstream.ReadByte();
 
-        // get the received packet data length.
+        // Leer el tama�o de los datos
         byte[] lengthBytes = new byte[4];
         nstream.Read(lengthBytes, 0, 4);
         int dataLength = BitConverter.ToInt32(lengthBytes, 0);
 
-        // get the packet data.
+        // Leer los datos JSON
         byte[] dataBytes = new byte[dataLength];
         nstream.Read(dataBytes, 0, dataLength);
-        string data = Encoding.UTF8.GetString(dataBytes);
+        string jsonData = Encoding.UTF8.GetString(dataBytes);
 
-        Console.WriteLine("[PACKET] Packet deserialized: PacketID -> {0} | Data -> {1}", packetid, data);
+        // Convertir el string JSON a JToken (puede ser JObject o JArray)
+        JObject json = JObject.Parse(jsonData);
 
-        return new Packet(packetid, data);
+        Debug.Log($"[PACKET] Packet deserialized: PacketID -> {packetid} | Data -> {json}");
+
+        return new Packet(packetid, json);
     }
 
     public void Send(TcpClient receiver)

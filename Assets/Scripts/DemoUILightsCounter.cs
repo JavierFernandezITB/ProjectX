@@ -26,7 +26,7 @@ public class DemoUILightsCounter : MonoBehaviour
         }
         catch
         {
-            
+
         }
     }
 }
