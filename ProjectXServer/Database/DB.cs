@@ -87,7 +87,7 @@ namespace ProjectXServer.Database
 
                 if (isHashValid)
                 {
-                    Account accountObj = await GeneratePlayerObject(accountId);
+                    Account accountObj = await GenerateAccountObject(accountId);
                     string authToken = await CreateAuthToken(accountId);
                     return (authToken, accountObj);
                 }
@@ -113,8 +113,8 @@ namespace ProjectXServer.Database
             return success ? randomGeneratedToken : null;
         }
 
-        // Generate a player object
-        public static async Task<Account> GeneratePlayerObject(int accountId)
+        // Generate a account object
+        public static async Task<Account> GenerateAccountObject(int accountId)
         {
             string query = "SELECT username, email, created_at FROM accounts WHERE id = @accountid";
             var parameters = new Dictionary<string, object>
@@ -199,7 +199,7 @@ namespace ProjectXServer.Database
                 var (accountId, expirationDate) = authData.First();
                 if (expirationDate > DateTime.UtcNow)
                 {
-                    return await GeneratePlayerObject(accountId);
+                    return await GenerateAccountObject(accountId);
                 }
             }
 
@@ -231,13 +231,36 @@ namespace ProjectXServer.Database
             }
         }
 
+        // Save account data with friends as INT[] array
+        public static async Task SaveAccountData(Account accountObject)
+        {
+            string query = @"
+                UPDATE accounts 
+                SET username = @username, 
+                    password_hash = @password_hash, 
+                    email = @email, 
+                    friends = @friends
+                WHERE id = @id";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "@id", accountObject.Id },
+                { "@username", accountObject.Username },
+                { "@password_hash", accountObject.PasswordHash },
+                { "@email", accountObject.Email },
+                { "@friends", accountObject.Friends.ToArray() } // Convert List<int> to int[] for PostgreSQL
+            };
+
+            await QueryExecutor.ExecuteNonQueryAsync(query, parameters);
+        }
+
+
         // Save player data
         public static async Task SavePlayerData(Player playerObject)
         {
             string query = @"
                         UPDATE players 
-                        SET account_id = @account_id, 
-                            light_points = @light_points, 
+                        SET light_points = @light_points, 
                             prem_points = @prem_points, 
                             mastery_points = @mastery_points, 
                             current_special_skill_charge = @current_special_skill_charge, 

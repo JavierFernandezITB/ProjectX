@@ -12,6 +12,7 @@ namespace ProjectXServer
     {
         public static void StartClient()
         { 
+            /*
             TcpClient serverSocket = new TcpClient("127.0.0.1", Globals.port);
 
             string user = "test1";
@@ -29,6 +30,7 @@ namespace ProjectXServer
             string[] response = authPacketResponse.Data.Split(" ");
             if (response[0] == "OK")
                 Console.WriteLine($"[CLIENT] Successfully logged in as ID: {response[1]} with NAME: {response[2]}");
+            */
         }
     }
 }

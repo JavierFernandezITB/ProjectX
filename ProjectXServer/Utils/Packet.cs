@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net.Sockets;
-
 using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ProjectXServer.Utils
 {
-
-    internal enum PacketType // remember to recast type before comparing.
-    { 
+    internal enum PacketType
+    {
         Auth,
         Action,
         ActionResult
@@ -20,9 +16,9 @@ namespace ProjectXServer.Utils
     internal class Packet
     {
         public byte PacketId;
-        public string Data;
+        public JObject Data;
 
-        public Packet(byte packetId, string data) 
+        public Packet(byte packetId, JObject data)
         {
             PacketId = packetId;
             Data = data;
@@ -31,17 +27,20 @@ namespace ProjectXServer.Utils
         public byte[] Serialize()
         {
             using (MemoryStream memstream = new MemoryStream())
-            { 
-                // write the packet id
+            {
+                // Escribir el PacketId
                 memstream.WriteByte(PacketId);
 
-                // save the packet data size.
-                byte[] dataLength = BitConverter.GetBytes(Data.Length);
+                // Serializar los datos JSON a string
+                string jsonData = Data.ToString();
+                byte[] dataBytes = Encoding.UTF8.GetBytes(jsonData);
+
+                // Guardar el tamaño de los datos
+                byte[] dataLength = BitConverter.GetBytes(dataBytes.Length);
                 memstream.Write(dataLength, 0, dataLength.Length);
 
-                // save the data as an array of bytes.
-                byte[] dataArray = Encoding.UTF8.GetBytes(Data);
-                memstream.Write(dataArray, 0, dataArray.Length);
+                // Escribir los datos JSON
+                memstream.Write(dataBytes, 0, dataBytes.Length);
 
                 return memstream.ToArray();
             }
@@ -49,22 +48,25 @@ namespace ProjectXServer.Utils
 
         public static Packet Deserialize(NetworkStream nstream)
         {
-            // get the packet id.
+            // Obtener el PacketId
             byte packetid = (byte)nstream.ReadByte();
 
-            // get the received packet data length.
+            // Leer el tamaño de los datos
             byte[] lengthBytes = new byte[4];
             nstream.Read(lengthBytes, 0, 4);
             int dataLength = BitConverter.ToInt32(lengthBytes, 0);
 
-            // get the packet data.
+            // Leer los datos JSON
             byte[] dataBytes = new byte[dataLength];
             nstream.Read(dataBytes, 0, dataLength);
-            string data = Encoding.UTF8.GetString(dataBytes);
+            string jsonData = Encoding.UTF8.GetString(dataBytes);
 
-            Console.WriteLine("[PACKET] Packet deserialized: PacketID -> {0} | Data -> {1}", packetid, data);
+            // Convertir el string JSON a JToken (puede ser JObject o JArray)
+            JObject json = JObject.Parse(jsonData);
 
-            return new Packet(packetid, data);
+            Console.WriteLine("[PACKET] Packet deserialized: PacketID -> {0} | Data -> {1}", packetid, json);
+
+            return new Packet(packetid, json);
         }
 
         public void Send(TcpClient receiver)

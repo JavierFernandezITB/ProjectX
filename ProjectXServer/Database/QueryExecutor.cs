@@ -9,7 +9,7 @@ namespace ProjectXServer.Database
 {
     internal class QueryExecutor
     {
-        private static string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=pgsql;Database=projectx_db";
+        private static string connectionString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=projectx_db";
 
         private static NpgsqlConnection GetConnection()
         {

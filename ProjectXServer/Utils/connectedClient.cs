@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectXServer.Utils
 {
-    internal class connectedClient
+    internal class ConnectedClient
     {
         public TcpClient Socket;
         public Account Account;

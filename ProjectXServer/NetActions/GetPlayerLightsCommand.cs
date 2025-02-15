@@ -1,4 +1,5 @@
-﻿using ProjectXServer.Utils;
+﻿using Newtonsoft.Json.Linq;
+using ProjectXServer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,17 +16,34 @@ namespace ProjectXServer.NetActions
         {
             Console.WriteLine("[ACTION] Executing GetPlayerLights");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
-            Console.WriteLine($"[ACTION] Parameters: {string.Join(", ", message.Parameters)}");
-            string lightsData = string.Empty;
+
+            // Correct dictionary initialization
+            var lightsDataList = new List<Dictionary<string, string>>();
+
+            Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+                { "lightsDataDict", lightsDataList }
+            };
+
+            Dictionary<string, object> responseData = new Dictionary<string, object>() {
+                { "action", "GetPlayerLights" },
+                { "params", paramsDict }
+            };
+
+            // Directly use lightsDataList instead of TryGetValue
             foreach (CollectableLight light in message.Client.Player.collectableLights)
             {
-                lightsData += $"{light.UUID}|{light.Position.X}|{light.Position.Y}|{light.Position.Z} ";
+                Dictionary<string, string> lightDataDict = new Dictionary<string, string>() {
+                    { "uuid", light.UUID.ToString() },
+                    { "lightPosX", light.Position.X.ToString() },
+                    { "lightPosY", light.Position.Y.ToString() },
+                    { "lightPosZ", light.Position.Z.ToString() }
+                };
+                lightsDataList.Add(lightDataDict);
             }
-            if (lightsData.Length <= 0)
-                lightsData = "EMPTY";
-            Console.WriteLine(lightsData);
-            Packet response = new Packet((byte)PacketType.ActionResult, lightsData);
+
+            Packet response = new Packet((byte)PacketType.ActionResult, JObject.FromObject(responseData));
             response.Send(message.Client.Socket);
         }
+
     }
 }

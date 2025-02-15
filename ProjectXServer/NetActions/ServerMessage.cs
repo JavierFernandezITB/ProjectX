@@ -10,8 +10,8 @@ namespace ProjectXServer.NetActions
 {
     internal class ServerMessage
     {
-        public connectedClient Client;
+        public ConnectedClient Client;
         public string Action;
-        public string[] Parameters;
+        public Dictionary<string, object> Parameters;
     }
 }

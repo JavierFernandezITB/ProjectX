@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ProjectXServer.NetActions
 {
@@ -15,20 +16,28 @@ namespace ProjectXServer.NetActions
         {
             Console.WriteLine("[ACTION] Executing CollectLightTowers");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
-            Console.WriteLine($"[ACTION] Parameters: {string.Join(", ", message.Parameters)}");
 
-            int towerId = int.Parse(message.Parameters[0]);
+            int towerId = (int)message.Parameters["towerId"] ;
             LightTower playerLightTowerObject = message.Client.Player.unlockedLightTowers.FirstOrDefault(tower => tower.TowerNum == towerId);
             if (playerLightTowerObject != null)
             {
                 TimeSpan elapsedTime = DateTime.Now - playerLightTowerObject.InitDate;
                 int reward = (int)(elapsedTime.TotalMinutes * (playerLightTowerObject.BaseAmount * playerLightTowerObject.Multiplier));
-                Console.WriteLine(reward);
                 playerLightTowerObject.InitDate = DateTime.Now;
                 message.Client.Player.LightPoints += reward;
             }
             await DB.SaveTowerData(message.Client.Player);
-            Packet responsePacket = new Packet((byte)PacketType.ActionResult, $"{playerLightTowerObject.InitDate}");
+
+            Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+                { "serverInitDate", playerLightTowerObject.InitDate }
+            };
+
+            Dictionary<string, object> responseData = new Dictionary<string, object>() {
+                { "action", "CollectLightTowers" },
+                { "params", paramsDict }
+            };
+
+            Packet responsePacket = new Packet((byte)PacketType.ActionResult, JObject.FromObject(responseData));
             responsePacket.Send(message.Client.Socket);
         }
     }

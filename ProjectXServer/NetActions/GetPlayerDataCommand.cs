@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace ProjectXServer.NetActions
 {
@@ -16,9 +17,23 @@ namespace ProjectXServer.NetActions
         {
             Console.WriteLine("[ACTION] Executing GetPlayerDataCommand");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
-            Console.WriteLine($"[ACTION] Parameters: {string.Join(", ", message.Parameters)}");
+
+            Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+                { "playerId", message.Client.Player.Id },
+                { "lightPoints", message.Client.Player.LightPoints },
+                { "premPoints", message.Client.Player.PremPoints },
+                { "masteryPoints", message.Client.Player.MasteryPoints },
+                { "currentSpecialSkillCharge", message.Client.Player.CurrentSpecialSkillCharge },
+                { "currentSpecialShieldCharge", message.Client.Player.CurrentSpecialShieldCharge },
+            };
+
+            Dictionary<string, object> responseData = new Dictionary<string, object>() {
+                { "action", "GetPlayerData" },
+                { "params", paramsDict }
+            };
+            
             await DB.SavePlayerData(message.Client.Player);
-            Packet response = new Packet((byte)PacketType.ActionResult, $"{message.Client.Player.Id} {message.Client.Player.LightPoints} {message.Client.Player.PremPoints} {message.Client.Player.MasteryPoints} {message.Client.Player.CurrentSpecialSkillCharge} {message.Client.Player.CurrentSpecialShieldCharge}");
+            Packet response = new Packet((byte)PacketType.ActionResult, JObject.FromObject(responseData));
             response.Send(message.Client.Socket);
         }
     }
