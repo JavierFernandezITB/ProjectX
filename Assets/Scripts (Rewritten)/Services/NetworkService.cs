@@ -20,9 +20,13 @@ public class NetworkService : ServicesReferences
     // Private variables.
     private const string AuthTokenFilePath = "./authTokenFile";
 
-    void Start()
+    private void Awake()
     {
+        base.GetServices();
+        base.Persist<NetworkService>();
+
         localClient = new Client("127.0.0.1", 18800, AuthTokenFilePath);
+        // Connection is started in OnEnable.
     }
 
     private void OnEnable()
@@ -31,6 +35,9 @@ public class NetworkService : ServicesReferences
         localClient.ConnectionFailed += OnClientConnectionFailed;
         localClient.AuthenticationSuccess += OnClientSuccessfullyAuthenticated;
         localClient.AuthenticationFailed += OnClientFailedAuthentication;
+
+        // here lol
+        localClient.StartConnection();
     }
 
     private void OnDisable()
@@ -60,6 +67,9 @@ public class NetworkService : ServicesReferences
         localAccount = new Account((int)response.Data["accountid"], (string)response.Data["username"]);
         localPlayer = new Player();
         UpdatePlayerData();
+
+        // Start network loop!
+        StartCoroutine(NetworkLoop());
     }
 
     private void OnClientFailedAuthentication()
@@ -100,8 +110,13 @@ public class NetworkService : ServicesReferences
 
         Packet response = Packet.Receive(localClient.serverSocket);
 
+        // Deserialize params dictionary
         Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
-        List<Dictionary<string, string>> lightsDataDict = responseParams["lightsDataDict"].ConvertTo<List<Dictionary<string, string>>>();
+
+        // Extract and convert "lightsDataDict"
+        JArray lightsDataArray = response.Data["params"]["lightsDataDict"] as JArray;
+        List<Dictionary<string, string>> lightsDataDict = lightsDataArray?.ToObject<List<Dictionary<string, string>>>();
+
         if (lightsDataDict.Count != 0)
         {
             foreach (Dictionary<string, string> entry in lightsDataDict)
@@ -127,11 +142,11 @@ public class NetworkService : ServicesReferences
         Packet playerDataResponse = Packet.Receive(localClient.serverSocket);
         Dictionary<string, object> responseParams = playerDataResponse.Data["params"].ToObject<Dictionary<string, object>>();
 
-        localPlayer.playerId = (int)responseParams["playerId"];
-        localPlayer.lightCurrency = (int)responseParams["lightPoints"];
-        localPlayer.premiumCurrency = (int)responseParams["premPoints"];
-        localPlayer.masteryPoints = (int)responseParams["masteryPoints"];
-        localPlayer.specialSkillCharge = (float)responseParams["currentSpecialSkillCharge"];
-        localPlayer.specialShieldCharge = (float)responseParams["currentSpecialShieldCharge"];
+        localPlayer.playerId = Convert.ToInt32(responseParams["playerId"]);
+        localPlayer.lightCurrency = Convert.ToInt32(responseParams["lightPoints"]);
+        localPlayer.premiumCurrency = Convert.ToInt32(responseParams["premPoints"]);
+        localPlayer.masteryPoints = Convert.ToInt32(responseParams["masteryPoints"]);
+        localPlayer.specialSkillCharge = Convert.ToSingle(responseParams["currentSpecialSkillCharge"]);
+        localPlayer.specialShieldCharge = Convert.ToSingle(responseParams["currentSpecialShieldCharge"]);
     }
 }

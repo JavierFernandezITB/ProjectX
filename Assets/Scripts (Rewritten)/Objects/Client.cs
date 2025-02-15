@@ -34,19 +34,20 @@ public class Client
         AuthTokenPath = authTokenPath;
     }
 
-    private void StartConnection()
+    public void StartConnection()
     {
         Debug.Log("Attempting to connect to the server...");
-        serverSocket = new TcpClient(ServerIP, ServerPort);
-
-        if (serverSocket.Connected)
+        try
         {
-            ConnectionEstablished?.Invoke();
+            serverSocket = new TcpClient(ServerIP, ServerPort);
         }
-        else
+        catch 
         {
             ConnectionFailed?.Invoke();
+            return;
         }
+        
+        ConnectionEstablished?.Invoke();
     }
 
     private void AccountLogin()
@@ -155,6 +156,7 @@ public class Client
     {
         string responseType = (string)responsePacket.Data["action"];
         string responseStatus = (string)responsePacket.Data["response"];
+        Debug.Log(responseType);
 
         if (responseStatus == "OK")
         {
@@ -176,11 +178,12 @@ public class Client
 
             case "LOGIN":
                 SaveAuthToken((string)response.Data["token"]);
+                Debug.Log("Login successful!");
                 //SetupAccount(response);
                 break;
 
             case "TLOGIN":
-                //SetupAccount(response);
+                Debug.Log("Token Login successful!");
                 break;
 
             default:

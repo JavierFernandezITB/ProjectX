@@ -24,6 +24,9 @@ public class TouchManagerService : ServicesReferences
 
     void Awake()
     {
+        base.GetServices();
+        base.Persist<TouchManagerService>();
+
         playerInput = GetComponent<PlayerInput>();
         touchPositionAction = playerInput.actions.FindAction("TouchPosition");
         touchPressAction = playerInput.actions.FindAction("TouchPress");

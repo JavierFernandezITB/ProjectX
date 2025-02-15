@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,12 @@ public class EntityService : ServicesReferences
 {
     public GameObject lightPrefab;
     public List<CollectableLight> spawnedLights = new List<CollectableLight>();
+
+    private void Awake()
+    {
+        base.GetServices();
+        base.Persist<EntityService>();
+    }
 
     private void OnEnable()
     {
@@ -49,31 +56,31 @@ public class EntityService : ServicesReferences
 
     private void OnLightCollected(List<CollectableLight> lightsToCollect)
     {
+        // Receive packet from server
         Packet collectionPacketResponse = Packet.Receive(networkService.localClient.serverSocket);
-        Dictionary<string, object> responseParams = collectionPacketResponse.Data["params"].ToObject<Dictionary<string, object>>();
-        List<string> uuidsList = responseParams["uuidsList"].ConvertTo<List<string>>();
 
+        // Deserialize the "params" dictionary safely
+        Dictionary<string, object> responseParams = collectionPacketResponse.Data["params"].ToObject<Dictionary<string, object>>();
+
+        // Safely extract "uuidsList"
+        List<string> uuidsList = (responseParams["uuidsList"] as JArray)?.ToObject<List<string>>() ?? new List<string>();
+
+        // If "NONE" is in the list, stop execution
         if (uuidsList.Contains("NONE"))
             return;
-        else
-        {
-            foreach (string uuid in uuidsList)
-            {
-                if (Guid.TryParse(uuid, out Guid uuidGuid))
-                {
-                    Debug.Log($"Trying to find {uuid}");
-                    CollectableLight matchingLight = lightsToCollect.FirstOrDefault(light => light.UUID == uuidGuid);
 
-                    // If a matching light is found, perform any actions (e.g., collecting the light).
-                    if (matchingLight != null)
-                    {
-                        Console.WriteLine($"Light with UUID {matchingLight.UUID} collected!");
-                        Destroy(matchingLight.lightGameObject);
-                    }
-                }
-                else
+        foreach (string uuid in uuidsList)
+        {
+            if (Guid.TryParse(uuid, out Guid uuidGuid))
+            {
+                // Find matching light in lightsToCollect list
+                CollectableLight matchingLight = lightsToCollect.FirstOrDefault(light => light.UUID == uuidGuid);
+
+                if (matchingLight != null)
                 {
-                    Console.WriteLine($"Invalid UUID format: {uuid}");
+                    Console.WriteLine($"Light with UUID {matchingLight.UUID} collected!");
+                    Destroy(matchingLight.lightGameObject);
+                    spawnedLights.Remove(matchingLight);
                 }
             }
         }
