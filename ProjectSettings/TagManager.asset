@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - LightTower
+  - CollectableLight
   layers:
   - Default
   - TransparentFX
