@@ -15,11 +15,11 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.3137255, g: 0.43137255, b: 0.7176471, a: 0.44705883}
+  m_FogColor: {r: 0.18187076, g: 0.5754717, b: 0.42841196, a: 0.5019608}
   m_FogMode: 1
   m_FogDensity: 0.16
-  m_LinearFogStart: 42.91
-  m_LinearFogEnd: 232.15
+  m_LinearFogStart: 71.8
+  m_LinearFogEnd: 307
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -185,6 +185,21 @@ PrefabInstance:
     - target: {fileID: 8214240902245995183, guid: 085da68714f508a4585c11059c36616f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8549383332949306315, guid: 085da68714f508a4585c11059c36616f,
+        type: 3}
+      propertyPath: m_TreeCrossFadeLength
+      value: 32.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8549383332949306315, guid: 085da68714f508a4585c11059c36616f,
+        type: 3}
+      propertyPath: m_DetailObjectDistance
+      value: 328
+      objectReference: {fileID: 0}
+    - target: {fileID: 8549383332949306315, guid: 085da68714f508a4585c11059c36616f,
+        type: 3}
+      propertyPath: m_HeightmapMinimumLODSimplification
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
