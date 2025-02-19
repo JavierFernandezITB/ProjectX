@@ -6,12 +6,13 @@ using UnityEngine;
 
 public class LightTower
 {
-    /*
     public int TowerNum;
     public DateTime InitDate;
     public float Multiplier;
     public int BaseAmount;
+    public GameObject towerGameObject;
 
+    /*
     public int CalculateTowerRewards()
     {
         TimeSpan elapsedTime = DateTime.Now - lightTowerData.InitDate;
