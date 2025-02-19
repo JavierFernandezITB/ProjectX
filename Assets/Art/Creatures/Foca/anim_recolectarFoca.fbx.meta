@@ -1,9 +1,24 @@
 fileFormatVersion: 2
-guid: dc6551b744ed40d47995a33ebb1d9808
+guid: 478f5981effc8d54ab40fd3391a95043
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_amarillo
+    second: {fileID: 2100000, guid: 33c0b682287aef64da118cc0cdcfe192, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_azul
+    second: {fileID: 2100000, guid: 489dbd3d320338548a1ec9a5e7790949, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mat_naranja
+    second: {fileID: 2100000, guid: 73d9a28aef8010246903753d376ba4c0, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -95,11 +110,12 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: c69b5dd565f44b44f88a07768e968f98,
+    type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

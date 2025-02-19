@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7c8d60a623ca58c42b1cd518d7da366a
+guid: 6b4008b5dd346cc45ae8d99231686c34
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,28 +7,28 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Blanco
-    second: {fileID: 2100000, guid: 2060148e6a752834993db99356504377, type: 2}
+      name: BrilloOjos_Antena
+    second: {fileID: 2100000, guid: e08d61f49e6f6454c92da8a8faa73e96, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Luz
-    second: {fileID: 2100000, guid: c070c1fc4f5eab4449963a6aa4772532, type: 2}
+      name: Cola_AlasTraseras
+    second: {fileID: 2100000, guid: 8511e2cbd0080bf4083c43d2bfb94d48, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Manta Raya
-    second: {fileID: 2100000, guid: 679e8c5b6f4c11041b2aa82c402a3f42, type: 2}
+      name: ContornoAlasBrillo
+    second: {fileID: 2100000, guid: 1ef9cd118b23b01479e448edf14c9f78, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Manta Raya 2
-    second: {fileID: 2100000, guid: cc65a38dc3e3eff47bee97730aefb202, type: 2}
+      name: Cuerpo_AlasDelanteras
+    second: {fileID: 2100000, guid: fc4ad14b5d935af4b9c6414b7a3a0673, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Negro
-    second: {fileID: 2100000, guid: b2d685058c7342c4b99f0589030edfc4, type: 2}
+      name: Material.002
+    second: {fileID: 2100000, guid: 82a48d3e3face7f4cb4ca5e9c76bca79, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -116,15 +116,16 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Cube.001
+    rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: e29ace110cc0e694998ffe324625538c,
+    type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

@@ -3,7 +3,17 @@ guid: 233f6f89c8df94c4199d8ea230150b51
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "GafasPiscina_U\xF1as"
+    second: {fileID: 2100000, guid: dd63e1b9a7259514e9efc19e0bf5343c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Patas_cara_CaparazonPorDebjo
+    second: {fileID: 2100000, guid: d141248245207334daf34cb4fc6f0c4b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
