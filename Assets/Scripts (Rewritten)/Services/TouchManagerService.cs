@@ -14,6 +14,7 @@ public class TouchManagerService : ServicesReferences
 
     // Events.
     public event Action<List<CollectableLight>> CollectLight;
+    public event Action<GameObject> CollectTower;
 
     // Private variables.
     private PlayerInput playerInput;
@@ -85,6 +86,7 @@ public class TouchManagerService : ServicesReferences
             if (hit.collider.tag == "LightTower")
             {
                 //hit.transform.GetComponent<LightTower>().CollectTowerRewards();
+                CollectTower?.Invoke(hit.collider.gameObject);
             }
             else
             {

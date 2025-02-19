@@ -16,6 +16,7 @@ public class NetworkService : ServicesReferences
 
     // Events.
     public event Action<Dictionary<string, string>> LightReceived;
+    public event Action<LightTower> TowerReceived;
 
     // Private variables.
     private const string AuthTokenFilePath = "./authTokenFile";
@@ -86,11 +87,44 @@ public class NetworkService : ServicesReferences
     // goofy ass name
     private IEnumerator NetworkLoop()
     {
+        RequestLightTowers();
         while (localClient.serverSocket.Connected)
         {
             RequestCollectableLights();
 
             yield return new WaitForSeconds(1);
+        }
+    }
+
+    private void RequestLightTowers()
+    {
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>()
+        {
+        };
+
+        Dictionary<string, object> getLightTowers = new Dictionary<string, object>() {
+            { "action", "GetLightTowers" },
+            { "params", paramsDict }
+        };
+
+        Packet getLightTowersPacket = new Packet((byte)PacketType.Action, JObject.FromObject(getLightTowers));
+        getLightTowersPacket.Send(localClient.serverSocket);
+
+        Packet lightTowersPacketResult = Packet.Receive(localClient.serverSocket);
+        Dictionary<string, object> responseParams = lightTowersPacketResult.Data["params"].ToObject<Dictionary<string, object>>();
+
+        JArray lightTowersDataArray = lightTowersPacketResult.Data["params"]["towersDataDict"] as JArray;
+        List<Dictionary<string, string>> towersData = lightTowersDataArray?.ToObject<List<Dictionary<string, string>>>();
+
+        Debug.Log(lightTowersPacketResult.Data);
+        foreach (Dictionary<string, string> entry in towersData)
+        {
+            LightTower tower = new LightTower();
+            tower.TowerNum = int.Parse(entry["towerNum"]);
+            tower.InitDate = DateTime.Parse(entry["initDate"]);
+            tower.Multiplier = float.Parse(entry["multiplier"]);
+            tower.BaseAmount = int.Parse(entry["baseAmount"]);
+            TowerReceived?.Invoke(tower);
         }
     }
 

@@ -12,6 +12,7 @@ public class EntityService : ServicesReferences
 {
     public GameObject lightPrefab;
     public List<CollectableLight> spawnedLights = new List<CollectableLight>();
+    public List<LightTower> lightTowers = new List<LightTower>();
 
     private void Awake()
     {
@@ -22,13 +23,41 @@ public class EntityService : ServicesReferences
     private void OnEnable()
     {
         networkService.LightReceived += OnLightReceived;
+        networkService.TowerReceived += OnLightTowerReceived;
+        touchManagerService.CollectTower += OnLightTowerCollected;
         touchManagerService.CollectLight += OnLightCollected;
     }
 
     private void OnDisable()
     {
         networkService.LightReceived -= OnLightReceived;
+        networkService.TowerReceived -= OnLightTowerReceived;
+        touchManagerService.CollectTower -= OnLightTowerCollected;
         touchManagerService.CollectLight -= OnLightCollected;
+    }
+
+    private void OnLightTowerReceived(LightTower towerObject)
+    {
+        Debug.Log(towerObject.TowerNum);
+        GameObject mapObject = GameObject.Find($"/LightTower {towerObject.TowerNum}");
+        if (mapObject)
+        {
+            Debug.Log("Found game object.");
+            towerObject.towerGameObject = mapObject;
+            lightTowers.Add(towerObject);
+        }
+    }
+
+    private void OnLightTowerCollected(GameObject towerObject)
+    {
+        Debug.Log(towerObject.name);
+
+        LightTower lightTowerObject = lightTowers.FirstOrDefault(tower => tower.towerGameObject == towerObject);
+
+        if (lightTowerObject != null)
+        {
+            Debug.Log("Found the light tower object in the list!");
+        }
     }
 
     private void OnLightReceived(Dictionary<string, string> lightData)
@@ -56,16 +85,27 @@ public class EntityService : ServicesReferences
 
     private void OnLightCollected(List<CollectableLight> lightsToCollect)
     {
-        // Receive packet from server
+        /*
+        Dictionary<string, object> playerDataPacketDict = new Dictionary<string, object>()
+        {
+            { "action", "Patata" },
+            { "params", new Dictionary<string, object>() }
+        };
+
+        Packet playerDataPacket = new Packet((byte)Packet.PacketType.Action, JObject.FromObject(playerDataPacketDict));
+        playerDataPacket.Send(networkService.localClient.serverSocket);
+
+        Packet playerDataPacketResult = Packet.Receive(networkService.localClient.serverSocket);
+        Dictionary<string, object> playerDataParams = playerDataPacket.Data["params"].ToObject<Dictionary<string, object>>();
+        int patatas = (int)playerDataParams["patatas"];
+        */
+
         Packet collectionPacketResponse = Packet.Receive(networkService.localClient.serverSocket);
 
-        // Deserialize the "params" dictionary safely
         Dictionary<string, object> responseParams = collectionPacketResponse.Data["params"].ToObject<Dictionary<string, object>>();
 
-        // Safely extract "uuidsList"
         List<string> uuidsList = (responseParams["uuidsList"] as JArray)?.ToObject<List<string>>() ?? new List<string>();
 
-        // If "NONE" is in the list, stop execution
         if (uuidsList.Contains("NONE"))
             return;
 
@@ -73,7 +113,6 @@ public class EntityService : ServicesReferences
         {
             if (Guid.TryParse(uuid, out Guid uuidGuid))
             {
-                // Find matching light in lightsToCollect list
                 CollectableLight matchingLight = lightsToCollect.FirstOrDefault(light => light.UUID == uuidGuid);
 
                 if (matchingLight != null)

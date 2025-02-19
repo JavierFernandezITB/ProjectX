@@ -576,7 +576,7 @@ GameObject:
   - component: {fileID: 728910855}
   - component: {fileID: 728910854}
   m_Layer: 0
-  m_Name: LightTower
+  m_Name: LightTower 1
   m_TagString: LightTower
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
