@@ -513,8 +513,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Javier\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\prof\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -522,15 +521,11 @@
       "projectUniqueName": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\ProjectXServer.csproj",
       "projectName": "ProjectXServer",
       "projectPath": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\ProjectXServer.csproj",
-      "packagesPath": "C:\\Users\\Javier\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\prof\\.nuget\\packages\\",
       "outputPath": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Javier\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\prof\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -550,11 +545,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -590,7 +580,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
   }

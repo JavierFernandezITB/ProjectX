@@ -22,5 +22,4 @@ F:\Proyeckto X\ProjectXServer\ProjectXServer\obj\Debug\net7.0\ProjectXServer.pdb
 F:\Proyeckto X\ProjectXServer\ProjectXServer\obj\Debug\net7.0\ProjectXServer.genruntimeconfig.cache
 F:\Proyeckto X\ProjectXServer\ProjectXServer\obj\Debug\net7.0\ref\ProjectXServer.dll
 F:\Proyeckto X\ProjectXServer\ProjectXServer\bin\Debug\net7.0\Newtonsoft.Json.dll
-F:\Proyeckto X\ProjectXServer\ProjectXServer\obj\Debug\net7.0\ProjectXServer.sourcelink.json
-F:\Proyeckto X\ProjectXServer\ProjectXServer\obj\Debug\net7.0\ProjectX.32CED17B.Up2Date
+F:\Proyeckto X\ProjectXServer\ProjectXServer\obj\Debug\net7.0\ProjectXServer.csproj.CopyComplete

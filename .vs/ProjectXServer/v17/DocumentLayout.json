@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "F:\\Proyeckto X\\ProjectXServer\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getplayerlightscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getplayerlightscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getplayerdatacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getplayerdatacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GetLightTowersCommand.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
+              "RelativeToolTip": "ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-15T15:29:37.667Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GetPlayerDataCommand.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
+              "RelativeToolTip": "ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-15T15:29:34.183Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GetPlayerLightsCommand.cs",
+              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
+              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
+              "RelativeToolTip": "ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAgwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-15T15:29:27.837Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
