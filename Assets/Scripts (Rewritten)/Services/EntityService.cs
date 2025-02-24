@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
@@ -10,7 +11,9 @@ using UnityEngine.UIElements;
 
 public class EntityService : ServicesReferences
 {
+    public int selectedTowerNum;
     public GameObject lightPrefab;
+    public GameObject towerMenu;
     public List<CollectableLight> spawnedLights = new List<CollectableLight>();
     public List<LightTower> lightTowers = new List<LightTower>();
 
@@ -24,7 +27,7 @@ public class EntityService : ServicesReferences
     {
         networkService.LightReceived += OnLightReceived;
         networkService.TowerReceived += OnLightTowerReceived;
-        touchManagerService.CollectTower += OnLightTowerCollected;
+        touchManagerService.InteractWithTower += OnLightTowerInteracted;
         touchManagerService.CollectLight += OnLightCollected;
     }
 
@@ -32,7 +35,7 @@ public class EntityService : ServicesReferences
     {
         networkService.LightReceived -= OnLightReceived;
         networkService.TowerReceived -= OnLightTowerReceived;
-        touchManagerService.CollectTower -= OnLightTowerCollected;
+        touchManagerService.InteractWithTower -= OnLightTowerInteracted;
         touchManagerService.CollectLight -= OnLightCollected;
     }
 
@@ -48,16 +51,52 @@ public class EntityService : ServicesReferences
         }
     }
 
-    private void OnLightTowerCollected(GameObject towerObject)
+    private int CalculateTowerRewards(LightTower lightTowerData)
+    {
+        TimeSpan elapsedTime = DateTime.Now - lightTowerData.InitDate;
+        int reward = (int)(elapsedTime.TotalMinutes * (lightTowerData.BaseAmount * lightTowerData.Multiplier));
+        return reward;
+    }
+    
+    public void CloseTowerMenu()
+    {
+        touchManagerService.isInMenu = false;
+        towerMenu.SetActive(false);
+    }
+
+    public void UpdateTowerMenuData(LightTower lightTowerObject)
+    {
+        towerMenu.transform.GetChild(4).GetComponent<TMP_Text>().text = CalculateTowerRewards(lightTowerObject).ToString();
+        towerMenu.transform.GetChild(9).gameObject.SetActive(false);
+        int price = (int)(lightTowerObject.BaseAmount * lightTowerObject.Multiplier * lightTowerObject.TowerNum);
+        towerMenu.transform.GetChild(5).GetComponent<TMP_Text>().text = price.ToString();
+        int levels = (int)((lightTowerObject.Multiplier - 1) / 0.05);
+        towerMenu.transform.GetChild(2).GetComponent<TMP_Text>().text = levels.ToString();
+    }
+
+    private void OnLightTowerInteracted(GameObject towerObject) 
     {
         Debug.Log(towerObject.name);
 
         LightTower lightTowerObject = lightTowers.FirstOrDefault(tower => tower.towerGameObject == towerObject);
 
-        if (lightTowerObject != null)
+        selectedTowerNum = int.Parse(towerObject.name.Split(" ")[1]);
+
+        if (lightTowerObject == null)
         {
-            Debug.Log("Found the light tower object in the list!");
+            int price = networkService.RequestPurchasableTowerPrice(selectedTowerNum);
+            towerMenu.transform.GetChild(5).GetComponent<TMP_Text>().text = price.ToString();
+            towerMenu.transform.GetChild(4).GetComponent<TMP_Text>().text = "0";
+            towerMenu.transform.GetChild(2).GetComponent<TMP_Text>().text = "1";
+            towerMenu.transform.GetChild(9).gameObject.SetActive(true);
         }
+        else
+        {
+            UpdateTowerMenuData(lightTowerObject);
+        }
+
+        touchManagerService.isInMenu = true;
+        towerMenu.SetActive(true);
     }
 
     private void OnLightReceived(Dictionary<string, string> lightData)

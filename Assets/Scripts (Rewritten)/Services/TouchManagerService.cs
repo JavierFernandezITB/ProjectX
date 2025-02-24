@@ -11,10 +11,12 @@ using UnityEngine.UIElements;
 
 public class TouchManagerService : ServicesReferences
 {
+    // Public variables.
+    public bool isInMenu;
 
     // Events.
     public event Action<List<CollectableLight>> CollectLight;
-    public event Action<GameObject> CollectTower;
+    public event Action<GameObject> InteractWithTower;
 
     // Private variables.
     private PlayerInput playerInput;
@@ -33,8 +35,21 @@ public class TouchManagerService : ServicesReferences
         touchPressAction = playerInput.actions.FindAction("TouchPress");
     }
 
+    void Update()
+    {
+        if (!PlayerInput.all[0].enabled)
+        {
+            Debug.LogWarning("PlayerInput got disabled, re-enabling...");
+            PlayerInput.all[0].enabled = true;
+        }
+    }
+
     public void OnInteraction(InputAction.CallbackContext context)
     {
+        Debug.Log("wompitywompwompwomp");
+        if (isInMenu)
+            return;
+        Debug.Log("wompwomp");
         switch (context.phase)
         {
             case InputActionPhase.Performed:
@@ -86,7 +101,7 @@ public class TouchManagerService : ServicesReferences
             if (hit.collider.tag == "LightTower")
             {
                 //hit.transform.GetComponent<LightTower>().CollectTowerRewards();
-                CollectTower?.Invoke(hit.collider.gameObject);
+                InteractWithTower?.Invoke(hit.collider.gameObject);
             }
             else
             {

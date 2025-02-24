@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Packet;
@@ -130,6 +130,7 @@ public class NetworkService : ServicesReferences
 
     private void RequestCollectableLights()
     {
+        Debug.Log(touchManagerService.isInMenu);
         Dictionary<string, object> paramsDict = new Dictionary<string, object>()
         {
         };
@@ -158,6 +159,109 @@ public class NetworkService : ServicesReferences
                 LightReceived?.Invoke(entry);
             }
         }
+    }
+
+    public void RequestPurchaseTower()
+    {
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+            { "towerNum", entityService.selectedTowerNum.ToString() }
+        };
+
+        Dictionary<string, object> responseData = new Dictionary<string, object>() {
+            { "action", "BuyLightTower" },
+            { "params", paramsDict }
+        };
+
+        var purchasableTowersPacket = new Packet((byte)PacketType.Action, JObject.FromObject(responseData));
+        purchasableTowersPacket.Send(localClient.serverSocket);
+
+        Packet response = Packet.Receive(localClient.serverSocket);
+        
+        if (Convert.ToString(response.Data["status"]) == "OK")
+        {
+            Debug.Log("Successfully bought light tower!");
+            // disable buy button
+            entityService.towerMenu.transform.GetChild(9).gameObject.SetActive(false);
+            entityService.lightTowers.Clear();
+            RequestLightTowers();
+        } else
+        {
+            Debug.Log("Could not buy light tower.");
+        }
+    }
+
+    public void RequestTowerCollection()
+    {
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+            { "towerId", entityService.selectedTowerNum.ToString() }
+        };
+
+        Dictionary<string, object> responseData = new Dictionary<string, object>() {
+            { "action", "CollectLightTowers" },
+            { "params", paramsDict }
+        };
+
+        var purchasableTowersPacket = new Packet((byte)PacketType.Action, JObject.FromObject(responseData));
+        purchasableTowersPacket.Send(localClient.serverSocket);
+
+        Packet response = Packet.Receive(localClient.serverSocket);
+        Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
+
+        LightTower towerObject = entityService.lightTowers[entityService.selectedTowerNum-1];
+        towerObject.InitDate = DateTime.Parse(responseParams["serverInitDate"].ToString());
+
+        entityService.UpdateTowerMenuData(towerObject);
+    }
+
+    public void RequestUpgradeTower()
+    {
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+            { "towerNum", entityService.selectedTowerNum.ToString() }
+        };
+
+        Dictionary<string, object> responseData = new Dictionary<string, object>() {
+            { "action", "UpgradeLightTower" },
+            { "params", paramsDict }
+        };
+
+        var purchasableTowersPacket = new Packet((byte)PacketType.Action, JObject.FromObject(responseData));
+        purchasableTowersPacket.Send(localClient.serverSocket);
+
+        Packet response = Packet.Receive(localClient.serverSocket);
+
+        if (Convert.ToString(response.Data["status"]) == "OK")
+        {
+            Debug.Log("Successfully upgraded light tower!");
+            Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
+            LightTower towerObject = entityService.lightTowers.FirstOrDefault(tower => tower.TowerNum == entityService.selectedTowerNum);
+            towerObject.Multiplier = Convert.ToSingle(responseParams["multiplier"]);
+            Debug.Log($"New multiplier: {towerObject.Multiplier}");
+            entityService.UpdateTowerMenuData(towerObject);
+        }
+        else
+        {
+            Debug.Log("Could not upgrade light tower.");
+        }
+    }
+
+    public int RequestPurchasableTowerPrice(int towerNum)
+    {
+        Dictionary<string, object> paramsDict = new Dictionary<string, object>() {
+            { "towerNum", towerNum.ToString() }
+        };
+
+        Dictionary<string, object> responseData = new Dictionary<string, object>() {
+            { "action", "GetPurchasableTowerPrice" },
+            { "params", paramsDict }
+        };
+
+        var purchasableTowersPacket = new Packet((byte)PacketType.Action, JObject.FromObject(responseData));
+        purchasableTowersPacket.Send(localClient.serverSocket);
+
+        Packet response = Packet.Receive(localClient.serverSocket);
+        Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
+
+        return Convert.ToInt32(responseParams["towerPrice"]);
     }
 
     public void UpdatePlayerData()
