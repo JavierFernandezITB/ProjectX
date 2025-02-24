@@ -31,6 +31,30 @@ CREATE TABLE light_towers (
     FOREIGN KEY (player_id) REFERENCES players(id)
 );
 
+CREATE TABLE purchasable_towers (
+    tower_num INT,
+    init_date TIMESTAMP DEFAULT NOW(),
+    multiplier FLOAT,
+    base_amount INT
+);
+
+INSERT INTO purchasable_towers (tower_num, multiplier, base_amount)
+VALUES
+(1, 1.0, 100),
+(2, 1.0, 200),
+(3, 1.0, 400),
+(4, 1.0, 800),
+(5, 1.0, 1600),
+(6, 1.0, 3200),
+(7, 1.0, 6400),
+(8, 1.0, 12800),
+(9, 1.0, 25600),
+(10, 1.0, 51200),
+(11, 1.0, 102400),
+(12, 1.0, 204800);
+
+
+
 CREATE TABLE monsters (
     id SERIAL PRIMARY KEY,
     name VARCHAR(32),

@@ -183,6 +183,27 @@ namespace ProjectXServer.Database
             return lightTowers;
         }
 
+        public static async Task<List<LightTower>> GetPurchasableLightTowers()
+        {
+            string query = "SELECT * FROM purchasable_towers";
+            var parameters = new Dictionary<string, object>
+            {
+            };
+
+            List<LightTower> lightTowers = await QueryExecutor.ExecuteQueryAsync<LightTower>(query, parameters, reader =>
+            {
+                return new LightTower(
+                    -1,
+                    reader.GetInt32(0),          // tower_num
+                    reader.GetDateTime(1),       // init_date
+                    (float)reader.GetDouble(2),  // multiplier
+                    reader.GetInt32(3)           // base_amount
+                );
+            });
+
+            return lightTowers;
+        }
+
         // Login with auth token
         public static async Task<Account> LoginWithAuthToken(string token)
         {
@@ -230,6 +251,25 @@ namespace ProjectXServer.Database
                 await QueryExecutor.ExecuteNonQueryAsync(query, parameters);
             }
         }
+
+        public static async Task SaveTowerData(LightTower tower)
+        {
+            string query = @"
+                INSERT INTO light_towers (player_id, tower_num, init_date, multiplier, base_amount)
+                VALUES (@player_id, @tower_num, @init_date, @multiplier, @base_amount)";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "@player_id", tower.PlayerId },
+                { "@tower_num", tower.TowerNum },
+                { "@init_date", tower.InitDate },
+                { "@multiplier", tower.Multiplier },
+                { "@base_amount", tower.BaseAmount }
+            };
+
+            await QueryExecutor.ExecuteNonQueryAsync(query, parameters);
+        }
+
 
         // Save account data with friends as INT[] array
         public static async Task SaveAccountData(Account accountObject)

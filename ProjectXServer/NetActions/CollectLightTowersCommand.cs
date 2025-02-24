@@ -17,7 +17,7 @@ namespace ProjectXServer.NetActions
             Console.WriteLine("[ACTION] Executing CollectLightTowers");
             Console.WriteLine($"[ACTION] Executed by: {message.Client.Account.Id}");
 
-            int towerId = (int)message.Parameters["towerId"] ;
+            int towerId = Convert.ToInt32(message.Parameters["towerId"]);
             LightTower playerLightTowerObject = message.Client.Player.unlockedLightTowers.FirstOrDefault(tower => tower.TowerNum == towerId);
             if (playerLightTowerObject != null)
             {

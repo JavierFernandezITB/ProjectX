@@ -1,17 +1,33 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "F:\\Proyeckto X\\ProjectXServer\\",
+  "WorkspaceRootPath": "G:\\Proyeckto X\\ProjectXServer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getplayerlightscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getplayerlightscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|g:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\collectlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\collectlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|g:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\buylighttowercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\buylighttowercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|g:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\upgradelighttowercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\upgradelighttowercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|g:\\proyeckto x\\projectxserver\\projectxserver\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|G:\\Proyeckto X\\ProjectXServer\\projectxserver\\netactions\\getlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getlighttowerscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|f:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getplayerdatacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|g:\\proyeckto x\\projectxserver\\projectxserver\\netactions\\getplayerlightscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getplayerlightscommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|G:\\Proyeckto X\\ProjectXServer\\projectxserver\\netactions\\getplayerdatacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{805865B2-4E29-4D1F-9C55-BE9F2AF49097}|ProjectXServer\\ProjectXServer.csproj|solutionrelative:projectxserver\\netactions\\getplayerdatacommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -27,38 +43,89 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "BuyLightTowerCommand.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\BuyLightTowerCommand.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\BuyLightTowerCommand.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\BuyLightTowerCommand.cs",
+              "RelativeToolTip": "ProjectXServer\\NetActions\\BuyLightTowerCommand.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAwwA4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-24T23:18:42.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UpgradeLightTowerCommand.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\UpgradeLightTowerCommand.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\UpgradeLightTowerCommand.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\UpgradeLightTowerCommand.cs",
+              "RelativeToolTip": "ProjectXServer\\NetActions\\UpgradeLightTowerCommand.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-24T22:27:22.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CollectLightTowersCommand.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\CollectLightTowersCommand.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\CollectLightTowersCommand.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\CollectLightTowersCommand.cs",
+              "RelativeToolTip": "ProjectXServer\\NetActions\\CollectLightTowersCommand.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAAB4AAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-24T22:12:59.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Server.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Server.cs",
+              "RelativeDocumentMoniker": "ProjectXServer\\Server.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\Server.cs",
+              "RelativeToolTip": "ProjectXServer\\Server.cs",
+              "ViewState": "AQIAACIAAAAAAAAAAAAgwB8AAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-24T21:46:12.923Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "GetLightTowersCommand.cs",
-              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
               "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
-              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
               "RelativeToolTip": "ProjectXServer\\NetActions\\GetLightTowersCommand.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABkAAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-15T15:29:37.667Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "GetPlayerDataCommand.cs",
-              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
               "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
-              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
               "RelativeToolTip": "ProjectXServer\\NetActions\\GetPlayerDataCommand.cs",
               "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-15T15:29:34.183Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-15T15:29:34.183Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "GetPlayerLightsCommand.cs",
-              "DocumentMoniker": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
+              "DocumentMoniker": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
               "RelativeDocumentMoniker": "ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
-              "ToolTip": "F:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
+              "ToolTip": "G:\\Proyeckto X\\ProjectXServer\\ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
               "RelativeToolTip": "ProjectXServer\\NetActions\\GetPlayerLightsCommand.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAgwAAAAAAAAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAACEAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-15T15:29:27.837Z",
               "EditorCaption": ""

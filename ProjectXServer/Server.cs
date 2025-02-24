@@ -29,8 +29,11 @@ namespace ProjectXServer
                 { "GetPlayerData", new NetActions.GetPlayerDataCommand() },
                 { "GetPlayerLights", new NetActions.GetPlayerLightsCommand() },
                 { "CollectLights", new NetActions.CollectLightsCommand() },
-                { "GetLightTowers", new NetActions.GetLightTowersCommand() },
                 { "CollectLightTowers", new NetActions.CollectLightTowersCommand() },
+                { "GetLightTowers", new NetActions.GetLightTowersCommand() },
+                { "BuyLightTower", new NetActions.BuyLightTowerCommand() },
+                { "UpgradeLightTower", new NetActions.UpgradeLightTowerCommand() },
+                { "GetPurchasableTowerPrice", new NetActions.GetPurchasableTowerPriceCommand() },
             };
 
             serverSocket = new TcpListener(Globals.address, Globals.port);
