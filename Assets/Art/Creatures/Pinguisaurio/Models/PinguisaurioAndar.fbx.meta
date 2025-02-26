@@ -71,7 +71,7 @@ ModelImporter:
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    normalImportMode: 0
+    normalImportMode: 1
     tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
@@ -95,7 +95,7 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: b3047e75df4279241896f5fa42673c0c,
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 62b4b4864b28e8242ac978bf5da911f9,
     type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2

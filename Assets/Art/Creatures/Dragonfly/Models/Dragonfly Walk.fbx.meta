@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b3047e75df4279241896f5fa42673c0c
+guid: 49b4824d97c2e10478e6934b4afb01a1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,23 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: BLANCO
-    second: {fileID: 2100000, guid: 466c38820f59e2940804dac7ffbb85d5, type: 2}
+      name: Azul Luminscente
+    second: {fileID: 2100000, guid: 84895b90fb8fd3548a868b3f54bf93ff, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material
-    second: {fileID: 2100000, guid: 98b4c50d553afb247b9db09ea58abe70, type: 2}
+      name: Cuerpo
+    second: {fileID: 2100000, guid: a18cdc04563f852468f4dcd07ce97121, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material.002
-    second: {fileID: 2100000, guid: 8ca5908aed12e0d458716e572290252b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material.003
-    second: {fileID: 2100000, guid: 9f844727ef61db542838cba99567187b, type: 2}
+      name: Ojos
+    second: {fileID: 2100000, guid: bc12c652da00612489c247683f491238, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -115,11 +110,12 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: de9b0ae190d4ab647bd80b290509d14a,
+    type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

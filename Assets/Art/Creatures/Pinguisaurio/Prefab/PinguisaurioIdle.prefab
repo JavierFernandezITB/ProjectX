@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &3017464226214776743
+--- !u!1001 &1788822308048525734
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -8,62 +8,62 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.645973
+      value: -7.392801
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.84000015
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -19.898197
+      value: -21.437819
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: -8679921383154817045, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: 919132149155446097, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_Name
       value: PinguisaurioIdle
       objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: b3047e75df4279241896f5fa42673c0c,
+    - target: {fileID: 5866666021909216657, guid: 62b4b4864b28e8242ac978bf5da911f9,
         type: 3}
       propertyPath: m_Controller
       value: 
@@ -72,4 +72,4 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b3047e75df4279241896f5fa42673c0c, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 62b4b4864b28e8242ac978bf5da911f9, type: 3}
