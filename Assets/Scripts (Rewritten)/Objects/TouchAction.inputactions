@@ -46,7 +46,7 @@
                 {
                     "name": "",
                     "id": "322fd95f-3053-4839-beb2-895ef8007293",
-                    "path": "<Touchscreen>/Press",
+                    "path": "<Touchscreen>/touch*/Press",
                     "interactions": "Tap,Hold(duration=0.3)",
                     "processors": "",
                     "groups": "",

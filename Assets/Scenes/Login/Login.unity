@@ -2515,7 +2515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2be16455557b90646824685354da57dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  host: 172.30.1.66
+  host: 127.0.0.1
 --- !u!4 &2036302008
 Transform:
   m_ObjectHideFlags: 0
@@ -2651,6 +2651,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInMenu: 0
+  cameraTransform: {fileID: 0}
+  minBounds: {x: 0, y: 0}
+  maxBounds: {x: 0, y: 0}
+  smoothTime: 0.3
+  zoomSpeed: 5
+  minZoom: 5
+  maxZoom: 20
+  rotationSpeed: 100
+  minRotationX: 10
+  maxRotationX: 80
 --- !u!1 &1907368019487648089
 GameObject:
   m_ObjectHideFlags: 0
@@ -2714,6 +2724,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 59bb4739-ab1b-4452-b8ed-38f6c0e58ec7
     m_ActionName: Touch/TouchPosition[/Device Simulator Touchscreen/position,/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8e97ebdd-7014-44c8-b66c-be373137ba84
+    m_ActionName: Touch/Zoom
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c206da2e-74b8-4398-b774-51d89e0e5e20
+    m_ActionName: Touch/Rotate
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Touch
