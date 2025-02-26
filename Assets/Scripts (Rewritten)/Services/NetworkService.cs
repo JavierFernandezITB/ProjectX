@@ -2,9 +2,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Packet;
 
 public class NetworkService : ServicesReferences
@@ -13,10 +16,12 @@ public class NetworkService : ServicesReferences
     public Client localClient;
     public Player localPlayer;
     public Account localAccount;
-
+    public string host = "127.0.0.1";
+    
     // Events.
     public event Action<Dictionary<string, string>> LightReceived;
     public event Action<LightTower> TowerReceived;
+    
 
     // Private variables.
     private const string AuthTokenFilePath = "./authTokenFile";
@@ -26,7 +31,7 @@ public class NetworkService : ServicesReferences
         base.GetServices();
         base.Persist<NetworkService>();
 
-        localClient = new Client("127.0.0.1", 18800, AuthTokenFilePath);
+        localClient = new Client(host, 18800, AuthTokenFilePath);
         // Connection is started in OnEnable.
     }
 
@@ -52,7 +57,22 @@ public class NetworkService : ServicesReferences
     private void OnClientConnected()
     {
         Debug.Log("Connected to the server successfully.");
-        localClient.AccountTokenLogin();
+        if (File.Exists(AuthTokenFilePath))
+        {
+            localClient.AccountTokenLogin();
+        }
+    }
+    public void OnLogin()
+    {
+        string Name = GameObject.Find("/Canvas/Panel/Name_Box").GetComponent<TMP_InputField>().text;
+        string Password = GameObject.Find("/Canvas/Panel/Password_Box").GetComponent<TMP_InputField>().text;
+        localClient.AccountLogin(Name, Password);
+    }
+    public void OnRegister()
+    {
+        string Name = GameObject.Find("/Canvas/Panel/Name_Box/Text Area/Text").GetComponent<TMP_Text>().text;
+        string Password = GameObject.Find("/Canvas/Panel/Password_Box/Text Area/Text").GetComponent<TMP_Text>().text;
+        localClient.AccountRegister(Name, Password);
     }
 
     private void OnClientConnectionFailed()
@@ -71,6 +91,7 @@ public class NetworkService : ServicesReferences
 
         // Start network loop!
         StartCoroutine(NetworkLoop());
+        SceneManager.LoadScene("Collection_Lvl");
     }
 
     private void OnClientFailedAuthentication()
@@ -81,7 +102,8 @@ public class NetworkService : ServicesReferences
     private IEnumerator StartClientCoroutine()
     {
         yield return new WaitForSeconds(5);
-        localClient = new Client("127.0.0.1", 18800, AuthTokenFilePath);
+        localClient = new Client(host, 18800, AuthTokenFilePath);
+        localClient.StartConnection();
     }
 
     // goofy ass name
@@ -91,7 +113,7 @@ public class NetworkService : ServicesReferences
         while (localClient.serverSocket.Connected)
         {
             RequestCollectableLights();
-
+            Debug.Log("ohu moreno");
             yield return new WaitForSeconds(1);
         }
     }
@@ -130,7 +152,6 @@ public class NetworkService : ServicesReferences
 
     private void RequestCollectableLights()
     {
-        Debug.Log(touchManagerService.isInMenu);
         Dictionary<string, object> paramsDict = new Dictionary<string, object>()
         {
         };
@@ -181,7 +202,7 @@ public class NetworkService : ServicesReferences
         {
             Debug.Log("Successfully bought light tower!");
             // disable buy button
-            entityService.towerMenu.transform.GetChild(9).gameObject.SetActive(false);
+            entityService.currentTowerMenuObject.transform.GetChild(9).gameObject.SetActive(false);
             entityService.lightTowers.Clear();
             RequestLightTowers();
         } else
@@ -207,6 +228,7 @@ public class NetworkService : ServicesReferences
         Packet response = Packet.Receive(localClient.serverSocket);
         Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
 
+        Debug.Log($"Towers in list: {entityService.lightTowers.Count}");
         LightTower towerObject = entityService.lightTowers[entityService.selectedTowerNum-1];
         towerObject.InitDate = DateTime.Parse(responseParams["serverInitDate"].ToString());
 

@@ -50,23 +50,23 @@ public class Client
         ConnectionEstablished?.Invoke();
     }
 
-    private void AccountLogin()
+    public void AccountLogin(string Name, string Password)
     {
         Dictionary<string, string> loginData = new Dictionary<string, string>() {
             { "action", "LOGIN" },
-            { "username", "test" },
-            { "passwd", "test" }
+            { "username", Name },
+            { "passwd", Password }
         };
         var authPacket = new Packet((byte)PacketType.Auth, JObject.FromObject(loginData));
         SendAndHandleAuthResponse(authPacket);
     }
 
-    private void AccountRegister()
+    public void AccountRegister(string Name, string Password)
     {
         Dictionary<string, string> registerData = new Dictionary<string, string>() {
             { "action", "REGISTER" },
-            { "username", "test" },
-            { "passwd", "test" },
+            { "username", Name },
+            { "passwd", Password },
             { "email", "test@itb.cat" }
         };
         var authPacket = new Packet((byte)PacketType.Auth, JObject.FromObject(registerData));
@@ -155,7 +155,7 @@ public class Client
     private void ProcessAuthResponse(Packet responsePacket)
     {
         string responseType = (string)responsePacket.Data["action"];
-        string responseStatus = (string)responsePacket.Data["response"];
+        string responseStatus = (string)responsePacket.Data["status"];
         Debug.Log(responseType);
 
         if (responseStatus == "OK")

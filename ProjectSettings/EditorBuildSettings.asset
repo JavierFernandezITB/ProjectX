@@ -4,7 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Login/Login.unity
+    guid: 0f3eee29bc9a79649aff1c5d53e37aa7
+  - enabled: 1
+    path: Assets/Scenes/Collection_Scene/Collection_Lvl.unity
+    guid: c850ee8c3b14cc8459e7e186857cf567
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000,
       guid: 08f1bdb84aa231a42863acd375af67b0, type: 2}

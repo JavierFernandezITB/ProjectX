@@ -7,13 +7,14 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class EntityService : ServicesReferences
 {
     public int selectedTowerNum;
     public GameObject lightPrefab;
-    public GameObject towerMenu;
+    public GameObject towerMenuPrefab;
+    public GameObject currentTowerMenuObject;
     public List<CollectableLight> spawnedLights = new List<CollectableLight>();
     public List<LightTower> lightTowers = new List<LightTower>();
 
@@ -61,22 +62,52 @@ public class EntityService : ServicesReferences
     public void CloseTowerMenu()
     {
         touchManagerService.isInMenu = false;
-        towerMenu.SetActive(false);
+        Destroy(currentTowerMenuObject);
     }
 
     public void UpdateTowerMenuData(LightTower lightTowerObject)
     {
-        towerMenu.transform.GetChild(4).GetComponent<TMP_Text>().text = CalculateTowerRewards(lightTowerObject).ToString();
-        towerMenu.transform.GetChild(9).gameObject.SetActive(false);
+        currentTowerMenuObject.transform.GetChild(4).GetComponent<TMP_Text>().text = CalculateTowerRewards(lightTowerObject).ToString();
+        currentTowerMenuObject.transform.GetChild(9).gameObject.SetActive(false);
         int price = (int)(lightTowerObject.BaseAmount * lightTowerObject.Multiplier * lightTowerObject.TowerNum);
-        towerMenu.transform.GetChild(5).GetComponent<TMP_Text>().text = price.ToString();
+        currentTowerMenuObject.transform.GetChild(5).GetComponent<TMP_Text>().text = price.ToString();
         int levels = (int)((lightTowerObject.Multiplier - 1) / 0.05);
-        towerMenu.transform.GetChild(2).GetComponent<TMP_Text>().text = levels.ToString();
+        currentTowerMenuObject.transform.GetChild(2).GetComponent<TMP_Text>().text = levels.ToString();
     }
 
     private void OnLightTowerInteracted(GameObject towerObject) 
     {
         Debug.Log(towerObject.name);
+        currentTowerMenuObject = Instantiate(towerMenuPrefab);
+        // Assuming the buttons have indices
+        Button collectButton = currentTowerMenuObject.transform.GetChild(7).GetComponent<Button>();
+        Button upgradeButton = currentTowerMenuObject.transform.GetChild(8).GetComponent<Button>();
+        Button purchaseButton = currentTowerMenuObject.transform.GetChild(9).GetComponent<Button>();
+        Button closeButton = currentTowerMenuObject.transform.GetChild(10).GetComponent<Button>();
+
+        // Check if the buttons exist and add listeners
+        if (collectButton != null)
+        {
+            collectButton.onClick.AddListener(() => networkService.RequestTowerCollection());
+        }
+
+        if (upgradeButton != null)
+        {
+            upgradeButton.onClick.AddListener(() => networkService.RequestUpgradeTower());
+        }
+
+        if (purchaseButton != null)
+        {
+            purchaseButton.onClick.AddListener(() => networkService.RequestPurchaseTower());
+        }
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(CloseTowerMenu);
+        }
+
+
+
 
         LightTower lightTowerObject = lightTowers.FirstOrDefault(tower => tower.towerGameObject == towerObject);
 
@@ -85,10 +116,10 @@ public class EntityService : ServicesReferences
         if (lightTowerObject == null)
         {
             int price = networkService.RequestPurchasableTowerPrice(selectedTowerNum);
-            towerMenu.transform.GetChild(5).GetComponent<TMP_Text>().text = price.ToString();
-            towerMenu.transform.GetChild(4).GetComponent<TMP_Text>().text = "0";
-            towerMenu.transform.GetChild(2).GetComponent<TMP_Text>().text = "1";
-            towerMenu.transform.GetChild(9).gameObject.SetActive(true);
+            currentTowerMenuObject.transform.GetChild(5).GetComponent<TMP_Text>().text = price.ToString();
+            currentTowerMenuObject.transform.GetChild(4).GetComponent<TMP_Text>().text = "0";
+            currentTowerMenuObject.transform.GetChild(2).GetComponent<TMP_Text>().text = "1";
+            currentTowerMenuObject.transform.GetChild(9).gameObject.SetActive(true);
         }
         else
         {
@@ -96,7 +127,7 @@ public class EntityService : ServicesReferences
         }
 
         touchManagerService.isInMenu = true;
-        towerMenu.SetActive(true);
+        currentTowerMenuObject.SetActive(true);
     }
 
     private void OnLightReceived(Dictionary<string, string> lightData)
