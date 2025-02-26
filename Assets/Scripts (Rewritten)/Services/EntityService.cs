@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
@@ -43,7 +44,18 @@ public class EntityService : ServicesReferences
     private void OnLightTowerReceived(LightTower towerObject)
     {
         Debug.Log(towerObject.TowerNum);
+        StartCoroutine(AddTowerInList(towerObject));
+    }
+
+    private IEnumerator AddTowerInList(LightTower towerObject)
+    {
         GameObject mapObject = GameObject.Find($"/LightTower {towerObject.TowerNum}");
+        while (mapObject == null)
+        {
+            yield return new WaitForSeconds(.1f);
+            mapObject = GameObject.Find($"/LightTower {towerObject.TowerNum}");
+        }
+
         if (mapObject)
         {
             Debug.Log("Found game object.");

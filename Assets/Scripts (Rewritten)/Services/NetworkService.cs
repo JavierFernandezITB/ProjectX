@@ -57,11 +57,17 @@ public class NetworkService : ServicesReferences
     private void OnClientConnected()
     {
         Debug.Log("Connected to the server successfully.");
+        StartCoroutine(CheckTokenLoginCoroutine());
+    }
+    private IEnumerator CheckTokenLoginCoroutine()
+    {
+        yield return new WaitForSeconds(.5f);
         if (File.Exists(AuthTokenFilePath))
         {
             localClient.AccountTokenLogin();
         }
     }
+
     public void OnLogin()
     {
         string Name = GameObject.Find("/Canvas/Panel/Name_Box").GetComponent<TMP_InputField>().text;
@@ -113,7 +119,6 @@ public class NetworkService : ServicesReferences
         while (localClient.serverSocket.Connected)
         {
             RequestCollectableLights();
-            Debug.Log("ohu moreno");
             yield return new WaitForSeconds(1);
         }
     }
