@@ -85,7 +85,7 @@ namespace ProjectXServer
                     Console.WriteLine("[SERVER] Register successful! Sending response.");
                     Dictionary<string, string> responseData = new Dictionary<string, string>() {
                         { "action", "REGISTER" },
-                        { "response", "OK" }
+                        { "status", "OK" }
                     };
                     Packet responsePacket = new Packet((byte)PacketType.Auth, JObject.FromObject(responseData));
                     responsePacket.Send(client);
@@ -96,7 +96,7 @@ namespace ProjectXServer
                     Console.WriteLine("[SERVER] Register failed. Sending response.");
                     Dictionary<string, string> responseData = new Dictionary<string, string>() {
                         { "action", "REGISTER" },
-                        { "response", "BAD" }
+                        { "status", "BAD" }
                     };
                     Packet responsePacket = new Packet((byte)PacketType.Auth, JObject.FromObject(responseData));
                     responsePacket.Send(client);
@@ -132,7 +132,7 @@ namespace ProjectXServer
                     Console.WriteLine("[SERVER] Login failed. Sending response.");
                     Dictionary<string, string> responseData = new Dictionary<string, string>() {
                         { "action", "LOGIN" },
-                        { "response", "BAD" }
+                        { "status", "BAD" }
                     };
                     Packet responsePacket = new Packet((byte)PacketType.Auth, JObject.FromObject(responseData));
                     responsePacket.Send(client);
@@ -150,7 +150,7 @@ namespace ProjectXServer
                     Dictionary<string, string> responseData = new Dictionary<string, string>()
                     {
                         { "action", "TLOGIN" },
-                        { "response", "OK" },
+                        { "status", "OK" },
                         { "accountid", accountData.Id.ToString() },
                         { "username", accountData.Username.ToString() }
                     };
@@ -167,7 +167,7 @@ namespace ProjectXServer
                     Console.WriteLine("[SERVER] Token Login failed. Sending response.");
                     Dictionary<string, string> responseData = new Dictionary<string, string>() {
                         { "action", "TLOGIN" },
-                        { "response", "BAD" }
+                        { "status", "BAD" }
                     };
                     Packet responsePacket = new Packet((byte)PacketType.Auth, JObject.FromObject(responseData));
                     responsePacket.Send(client);
