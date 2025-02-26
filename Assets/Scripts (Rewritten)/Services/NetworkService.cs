@@ -21,16 +21,17 @@ public class NetworkService : ServicesReferences
     // Events.
     public event Action<Dictionary<string, string>> LightReceived;
     public event Action<LightTower> TowerReceived;
-    
+
 
     // Private variables.
-    private const string AuthTokenFilePath = "./authTokenFile";
+    private static string AuthTokenFilePath;
 
     private void Awake()
     {
         base.GetServices();
         base.Persist<NetworkService>();
 
+        AuthTokenFilePath = Path.Combine(Application.persistentDataPath, "authTokenFile");
         localClient = new Client(host, 18800, AuthTokenFilePath);
         // Connection is started in OnEnable.
     }
