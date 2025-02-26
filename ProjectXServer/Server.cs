@@ -187,6 +187,14 @@ namespace ProjectXServer
             {
                 Console.WriteLine($"[{localAccount.Id}] Waiting for client requests...");
                 Packet receivedData = Packet.Receive(socket);
+                // Si es null, es que se ha cortado la conexión.
+                if (receivedData == null)
+                {
+                    connectedClients.Remove(connectedClient);
+                    break;
+                }
+
+                    
                 string action = (string)receivedData.Data["action"];
 
                 if (messageHandlers.TryGetValue(action, out ICommand command))

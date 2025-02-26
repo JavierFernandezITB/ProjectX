@@ -62,7 +62,15 @@ namespace ProjectXServer.Utils
             string jsonData = Encoding.UTF8.GetString(dataBytes);
 
             // Convertir el string JSON a JToken (puede ser JObject o JArray)
-            JObject json = JObject.Parse(jsonData);
+            JObject json;
+            try
+            {
+                json = JObject.Parse(jsonData);
+            }
+            catch
+            {
+                return null;
+            }
 
             Console.WriteLine("[PACKET] Packet deserialized: PacketID -> {0} | Data -> {1}", packetid, json);
 
