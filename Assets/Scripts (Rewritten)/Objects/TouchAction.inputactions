@@ -22,6 +22,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Zoom",
+                    "type": "Value",
+                    "id": "8e97ebdd-7014-44c8-b66c-be373137ba84",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "c206da2e-74b8-4398-b774-51d89e0e5e20",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -29,7 +47,7 @@
                     "name": "",
                     "id": "322fd95f-3053-4839-beb2-895ef8007293",
                     "path": "<Touchscreen>/Press",
-                    "interactions": "Tap,Hold",
+                    "interactions": "Tap,Hold(duration=0.3)",
                     "processors": "",
                     "groups": "",
                     "action": "TouchPress",
@@ -44,6 +62,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "TouchPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d2378ce4-b786-4382-998f-98aeb5eb3c11",
+                    "path": "Scroll[Mouse]",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "70a930f8-e01f-4cc7-8ea6-e68f8c6a7283",
+                    "path": "<Delta>[Touchscreen]",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "96bb9b2d-d743-43e3-b4f3-11ff864fde51",
+                    "path": "Delta[Touchscreen]",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0ca5aa38-eb57-4582-814e-f6f8c1032829",
+                    "path": "<Delta>[Mouse]",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

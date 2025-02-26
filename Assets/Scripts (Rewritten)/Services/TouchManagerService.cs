@@ -22,8 +22,24 @@ public class TouchManagerService : ServicesReferences
     private PlayerInput playerInput;
     private InputAction touchPositionAction;
     private InputAction touchPressAction;
-    private InputAction touchHoldAction;
     private bool isDragging = false;
+    private Vector3 velocity = Vector3.zero;
+
+    // Camera variables
+    [SerializeField] public Transform cameraTransform;
+    [SerializeField] public Vector2 minBounds;
+    [SerializeField] public Vector2 maxBounds;
+    [SerializeField] public float smoothTime = 0.3f;
+    [SerializeField] public float zoomSpeed = 5f;
+    [SerializeField] public float minZoom = 5f;
+    [SerializeField] public float maxZoom = 20f;
+    [SerializeField] public float rotationSpeed = 100f;
+    [SerializeField] public float minRotationX = 10f;
+    [SerializeField] public float maxRotationX = 80f;
+
+    private float currentZoom;
+    private Vector3 lastMousePosition;
+    private bool isRotating = false;
 
     void Awake()
     {
@@ -33,6 +49,7 @@ public class TouchManagerService : ServicesReferences
         playerInput = GetComponent<PlayerInput>();
         touchPositionAction = playerInput.actions.FindAction("TouchPosition");
         touchPressAction = playerInput.actions.FindAction("TouchPress");
+        currentZoom = cameraTransform.localPosition.y;
     }
 
     void Update()
@@ -42,19 +59,17 @@ public class TouchManagerService : ServicesReferences
             Debug.LogWarning("PlayerInput got disabled, re-enabling...");
             PlayerInput.all[0].enabled = true;
         }
+        HandleZoom();
+        HandleRotation();
     }
 
     public void OnInteraction(InputAction.CallbackContext context)
     {
-        Debug.Log("wompitywompwompwomp");
-        if (isInMenu)
-            return;
-        Debug.Log("wompwomp");
+        if (isInMenu) return;
+
         switch (context.phase)
         {
             case InputActionPhase.Performed:
-                Debug.Log(context.interaction + " - Performed");
-
                 switch (context.interaction)
                 {
                     case TapInteraction:
@@ -64,93 +79,30 @@ public class TouchManagerService : ServicesReferences
                         isDragging = true;
                         StartCoroutine(TouchHoldCallback());
                         break;
-                    default:
-                        break;
                 }
-
-                break;
-            case InputActionPhase.Started:
-                Debug.Log(context.interaction + " - Started");
                 break;
             case InputActionPhase.Canceled:
-                Debug.Log(context.interaction + " - Canceled");
-
-                switch (context.interaction)
+                if (context.interaction is HoldInteraction)
                 {
-                    case HoldInteraction:
-                        isDragging = false;
-                        break;
+                    isDragging = false;
                 }
-
-                break;
-            default:
                 break;
         }
     }
 
     public void TouchPressCallback()
     {
-
         Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
-
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
-
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.tag == "LightTower")
             {
-                //hit.transform.GetComponent<LightTower>().CollectTowerRewards();
                 InteractWithTower?.Invoke(hit.collider.gameObject);
-            }
-            else
-            {
-                Vector3 hitPosition = hit.point;
-                List<CollectableLight> toCollect = new List<CollectableLight>();
-                Collider[] hitColliders = Physics.OverlapSphere(hitPosition, 5f);
-                foreach (Collider collider in hitColliders)
-                {
-                    if (collider.tag == "CollectableLight")
-                    {
-                        CollectableLight lightObject = entityService.spawnedLights.FirstOrDefault(l =>
-                        {
-                            return l.lightGameObject == collider.gameObject;
-                        });
-                        if (lightObject != null)
-                            toCollect.Add(lightObject);
-                    }
-                }
-
-                if (toCollect.Count == 0)
-                    return;
-
-                Dictionary<string, object> paramsDict = new Dictionary<string, object>()
-                {
-                    { "mousePosX", hitPosition.x},
-                    { "mousePosY", hitPosition.y},
-                    { "mousePosZ", hitPosition.z},
-                    { "uuidList", new List<string>() }
-                };
-
-                Dictionary<string, object> collectLights = new Dictionary<string, object>() {
-                    { "action", "CollectLights" },
-                    { "params", paramsDict }
-                };
-
-                foreach (CollectableLight collectableLight in toCollect)
-                {
-                    paramsDict["uuidList"].ConvertTo<List<string>>().Add(collectableLight.UUID.ToString());
-                }
-
-                Packet collectionPacket = new Packet((byte)Packet.PacketType.Action, JObject.FromObject(collectLights));
-                collectionPacket.Send(networkService.localClient.serverSocket);
-
-                CollectLight?.Invoke(toCollect);
             }
         }
     }
-
-    
 
     public IEnumerator TouchHoldCallback()
     {
@@ -168,13 +120,73 @@ public class TouchManagerService : ServicesReferences
 
             Vector3 horizontalMovement = -cameraRight * touchDelta.x * speedFactor;
             Vector3 verticalMovement = -cameraForward * touchDelta.y * speedFactor;
+            Vector3 targetPosition = initialCameraPosition + horizontalMovement + verticalMovement;
+            targetPosition.y = initialCameraPosition.y;
 
-            Vector3 newPosition = initialCameraPosition + horizontalMovement + verticalMovement;
-            newPosition.y = initialCameraPosition.y;
+            targetPosition.x = Mathf.Clamp(targetPosition.x, minBounds.x, maxBounds.x);
+            targetPosition.z = Mathf.Clamp(targetPosition.z, minBounds.y, maxBounds.y);
 
-            Camera.main.transform.position = newPosition;
-
+            Camera.main.transform.position = Vector3.SmoothDamp(Camera.main.transform.position, targetPosition, ref velocity, smoothTime);
             yield return new WaitForEndOfFrame();
+        }
+    }
+
+    void HandleZoom()
+    {
+        if (Mouse.current.scroll.ReadValue().y != 0)
+        {
+            currentZoom -= Mouse.current.scroll.ReadValue().y * zoomSpeed * Time.deltaTime;
+        }
+        else if (Touchscreen.current != null && Touchscreen.current.touches.Count == 2)
+        {
+            var touch0 = Touchscreen.current.touches[0];
+            var touch1 = Touchscreen.current.touches[1];
+
+            if (touch0.isInProgress && touch1.isInProgress)
+            {
+                float prevDistance = (touch0.startPosition.ReadValue() - touch1.startPosition.ReadValue()).magnitude;
+                float currentDistance = (touch0.position.ReadValue() - touch1.position.ReadValue()).magnitude;
+                float zoomDelta = (currentDistance - prevDistance) * 0.01f;
+                currentZoom -= zoomDelta * zoomSpeed * Time.deltaTime;
+            }
+        }
+
+        currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+        cameraTransform.localPosition = new Vector3(cameraTransform.localPosition.x, currentZoom, cameraTransform.localPosition.z);
+    }
+
+    void HandleRotation()
+    {
+        if (Mouse.current.rightButton.isPressed)
+        {
+            if (!isRotating)
+            {
+                lastMousePosition = Mouse.current.position.ReadValue();
+                isRotating = true;
+            }
+            else
+            {
+                Vector2 mouseDelta = Mouse.current.position.ReadValue() - (Vector2)lastMousePosition;
+                float rotationX = Mathf.Clamp(cameraTransform.eulerAngles.x - mouseDelta.y * rotationSpeed * Time.deltaTime, minRotationX, maxRotationX);
+                cameraTransform.eulerAngles = new Vector3(rotationX, cameraTransform.eulerAngles.y + mouseDelta.x * rotationSpeed * Time.deltaTime, 0);
+                lastMousePosition = Mouse.current.position.ReadValue();
+            }
+        }
+        else if (Touchscreen.current != null && Touchscreen.current.touches.Count == 2)
+        {
+            var touch0 = Touchscreen.current.touches[0];
+            var touch1 = Touchscreen.current.touches[1];
+
+            if (touch0.isInProgress && touch1.isInProgress)
+            {
+                Vector2 avgDelta = (touch0.delta.ReadValue() + touch1.delta.ReadValue()) * 0.5f;
+                float rotationX = Mathf.Clamp(cameraTransform.eulerAngles.x - avgDelta.y * rotationSpeed * Time.deltaTime, minRotationX, maxRotationX);
+                cameraTransform.eulerAngles = new Vector3(rotationX, cameraTransform.eulerAngles.y + avgDelta.x * rotationSpeed * Time.deltaTime, 0);
+            }
+        }
+        else
+        {
+            isRotating = false;
         }
     }
 }
