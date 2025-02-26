@@ -76,8 +76,8 @@ public class NetworkService : ServicesReferences
     }
     public void OnRegister()
     {
-        string Name = GameObject.Find("/Canvas/Panel/Name_Box/Text Area/Text").GetComponent<TMP_Text>().text;
-        string Password = GameObject.Find("/Canvas/Panel/Password_Box/Text Area/Text").GetComponent<TMP_Text>().text;
+        string Name = GameObject.Find("/Canvas/Panel/Name_Box").GetComponent<TMP_InputField>().text;
+        string Password = GameObject.Find("/Canvas/Panel/Password_Box").GetComponent<TMP_InputField>().text;
         localClient.AccountRegister(Name, Password);
     }
 
