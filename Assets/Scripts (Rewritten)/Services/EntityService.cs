@@ -8,6 +8,8 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class EntityService : ServicesReferences
@@ -18,11 +20,18 @@ public class EntityService : ServicesReferences
     public GameObject currentTowerMenuObject;
     public List<CollectableLight> spawnedLights = new List<CollectableLight>();
     public List<LightTower> lightTowers = new List<LightTower>();
+    public GameObject aiAnimalPrefab;
+    public NavMeshAgent aiAnimalAgent;
 
     private void Awake()
     {
         base.GetServices();
         base.Persist<EntityService>();
+    }
+
+    private void Start()
+    {
+        SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
     }
 
     private void OnEnable()
@@ -39,6 +48,89 @@ public class EntityService : ServicesReferences
         networkService.TowerReceived -= OnLightTowerReceived;
         touchManagerService.InteractWithTower -= OnLightTowerInteracted;
         touchManagerService.CollectLight -= OnLightCollected;
+    }
+
+    private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "Collection_Lvl" && aiAnimalAgent == null)
+        {
+            aiAnimalAgent = Instantiate(aiAnimalPrefab).GetComponent<NavMeshAgent>();
+            StartCoroutine(aiAgentCoroutine());
+        }
+    }
+
+    private IEnumerator aiAgentCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        while (aiAnimalAgent != null)
+        {
+            yield return new WaitForSeconds(1f);
+            if (spawnedLights.Count > 0)
+            {
+                // Find the closest light
+                GameObject closestLight = FindClosestLight();
+
+                if (closestLight != null)
+                {
+                    Debug.Log("Alerta por subnormal.");
+                    // Set the destination to the closest light's position
+                    aiAnimalAgent.SetDestination(closestLight.transform.position);
+
+                    yield return new WaitUntil(() =>
+                    {
+                        if (closestLight == null)
+                            return true;
+                        return aiAnimalAgent.remainingDistance <= aiAnimalAgent.stoppingDistance && !aiAnimalAgent.pathPending;
+                    });
+
+                    // Check if the light still exists
+                    if (closestLight == null)
+                    {
+                        Debug.Log("The light was destroyed or picked up before arrival.");
+                        continue; // Skip to the next iteration
+                    }
+
+                    Debug.Log("Arrived at the closest light!");
+                    yield return new WaitForSeconds(5f); // Optional delay before interacting
+
+                    try
+                    {
+                        // Convert the light's position to screen space
+                        Vector3 pos = Camera.main.WorldToScreenPoint(closestLight.transform.position);
+                        touchManagerService.TouchPressCallback(pos);
+                    }
+                    catch
+                    {
+                        Debug.Log("The light got destroyed or already picked up.");
+                    }
+                }
+            }
+        }
+    }
+
+    private GameObject FindClosestLight()
+    {
+        GameObject closestLight = null;
+        float closestDistance = Mathf.Infinity; // Initialize with a very large value
+
+        foreach (var lightData in spawnedLights)
+        {
+            if (lightData.lightGameObject != null)
+            {
+                // Calculate the distance between the AI agent and the light
+                float distance = Vector3.Distance(aiAnimalAgent.transform.position, lightData.lightGameObject.transform.position);
+
+                // Check if this light is closer than the previous closest light
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestLight = lightData.lightGameObject;
+                }
+            }
+        }
+
+        return closestLight;
     }
 
     private void OnLightTowerReceived(LightTower towerObject)

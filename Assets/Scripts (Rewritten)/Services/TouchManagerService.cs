@@ -100,12 +100,12 @@ public class TouchManagerService : ServicesReferences
         }
     }
 
-    public void TouchPressCallback()
+    public void TouchPressCallback(Vector2? screenPos = null)
     {
+        if (screenPos == null)
+            screenPos = touchPositionAction.ReadValue<Vector2>();
 
-        Vector2 screenPos = touchPositionAction.ReadValue<Vector2>();
-
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        Ray ray = Camera.main.ScreenPointToRay((Vector3)screenPos);
 
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
