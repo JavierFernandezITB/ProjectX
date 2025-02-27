@@ -54,7 +54,7 @@ public class TouchManagerService : ServicesReferences
 
     void Update()
     {
-        
+
         string sceneName = SceneManager.GetActiveScene().name;
         if (sceneName == "Collection_Lvl")
         {
