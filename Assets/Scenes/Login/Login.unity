@@ -3062,6 +3062,9 @@ MonoBehaviour:
   towerMenuPrefab: {fileID: 5761886111705465920, guid: 08eeb1a0d9941c945baa4afa715355a0,
     type: 3}
   currentTowerMenuObject: {fileID: 0}
+  aiAnimalPrefab: {fileID: 4965919641189839616, guid: a36c1b846d72b854cbae469a6f4484e5,
+    type: 3}
+  aiAnimalAgent: {fileID: 0}
 --- !u!114 &1430771311283291652
 MonoBehaviour:
   m_ObjectHideFlags: 0

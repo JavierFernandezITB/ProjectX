@@ -64,7 +64,7 @@ public class Packet
         // Convertir el string JSON a JToken (puede ser JObject o JArray)
         JObject json = JObject.Parse(jsonData);
 
-        Debug.Log($"[PACKET] Packet deserialized: PacketID -> {packetid} | Data -> {json}");
+        //Debug.Log($"[PACKET] Packet deserialized: PacketID -> {packetid} | Data -> {json}");
 
         return new Packet(packetid, json);
     }
