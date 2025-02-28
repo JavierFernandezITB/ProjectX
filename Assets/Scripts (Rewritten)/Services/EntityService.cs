@@ -98,7 +98,7 @@ public class EntityService : ServicesReferences
                     {
                         // Convert the light's position to screen space
                         Vector3 pos = Camera.main.WorldToScreenPoint(closestLight.transform.position);
-                        touchManagerService.TouchPressCallback();
+                        touchManagerService.TouchPressCallback(pos);
                     }
                     catch
                     {
@@ -297,5 +297,6 @@ public class EntityService : ServicesReferences
                 }
             }
         }
+        networkService.UpdatePlayerData();
     }
 }

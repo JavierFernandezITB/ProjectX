@@ -16,8 +16,8 @@ public class NetworkService : ServicesReferences
     public Client localClient;
     public Player localPlayer;
     public Account localAccount;
-    public string host = "192.168.1.134";
-    
+    public string host = "127.0.0.1";
+
     // Events.
     public event Action<Dictionary<string, string>> LightReceived;
     public event Action<LightTower> TowerReceived;
@@ -34,18 +34,6 @@ public class NetworkService : ServicesReferences
         AuthTokenFilePath = Path.Combine(Application.persistentDataPath, "authTokenFile");
         localClient = new Client(host, 18800, AuthTokenFilePath);
         // Connection is started in OnEnable.
-    }
-    private void Update()
-    {
-            try
-            {
-                TMP_Text Light_Text_Tracker = GameObject.Find("UI_Collectable_Scene/Light_Text_Tracker").GetComponent<TMP_Text>();
-                Light_Text_Tracker.text = localPlayer.lightCurrency.ToString();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"Error al actualizar el TextMeshPro: {ex.Message}");
-            }
     }
 
     private void OnEnable()
@@ -215,7 +203,7 @@ public class NetworkService : ServicesReferences
         purchasableTowersPacket.Send(localClient.serverSocket);
 
         Packet response = Packet.Receive(localClient.serverSocket);
-        
+
         if (Convert.ToString(response.Data["status"]) == "OK")
         {
             Debug.Log("Successfully bought light tower!");
@@ -223,7 +211,8 @@ public class NetworkService : ServicesReferences
             entityService.currentTowerMenuObject.transform.GetChild(9).gameObject.SetActive(false);
             entityService.lightTowers.Clear();
             RequestLightTowers();
-        } else
+        }
+        else
         {
             Debug.Log("Could not buy light tower.");
         }
@@ -247,7 +236,7 @@ public class NetworkService : ServicesReferences
         Dictionary<string, object> responseParams = response.Data["params"].ToObject<Dictionary<string, object>>();
 
         Debug.Log($"Towers in list: {entityService.lightTowers.Count}");
-        LightTower towerObject = entityService.lightTowers[entityService.selectedTowerNum-1];
+        LightTower towerObject = entityService.lightTowers[entityService.selectedTowerNum - 1];
         towerObject.InitDate = DateTime.Parse(responseParams["serverInitDate"].ToString());
 
         entityService.UpdateTowerMenuData(towerObject);
