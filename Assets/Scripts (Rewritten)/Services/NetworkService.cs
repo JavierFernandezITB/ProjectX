@@ -16,7 +16,7 @@ public class NetworkService : ServicesReferences
     public Client localClient;
     public Player localPlayer;
     public Account localAccount;
-    public string host = "127.0.0.1";
+    public string host = "192.168.1.134";
     
     // Events.
     public event Action<Dictionary<string, string>> LightReceived;
@@ -34,6 +34,21 @@ public class NetworkService : ServicesReferences
         AuthTokenFilePath = Path.Combine(Application.persistentDataPath, "authTokenFile");
         localClient = new Client(host, 18800, AuthTokenFilePath);
         // Connection is started in OnEnable.
+    }
+    private void Update()
+    {
+        void Update()
+        {
+            try
+            {
+                TMP_Text Light_Text_Tracker = GameObject.Find("UI_Collectable_Scene/Light_Text_Tracker").GetComponent<TMP_Text>();
+                Light_Text_Tracker.text = localPlayer.lightCurrency.ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error al actualizar el TextMeshPro: {ex.Message}");
+            }
+        }
     }
 
     private void OnEnable()
