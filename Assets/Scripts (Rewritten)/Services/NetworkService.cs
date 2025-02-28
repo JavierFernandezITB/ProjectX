@@ -37,8 +37,6 @@ public class NetworkService : ServicesReferences
     }
     private void Update()
     {
-        void Update()
-        {
             try
             {
                 TMP_Text Light_Text_Tracker = GameObject.Find("UI_Collectable_Scene/Light_Text_Tracker").GetComponent<TMP_Text>();
@@ -48,7 +46,6 @@ public class NetworkService : ServicesReferences
             {
                 Debug.LogError($"Error al actualizar el TextMeshPro: {ex.Message}");
             }
-        }
     }
 
     private void OnEnable()
